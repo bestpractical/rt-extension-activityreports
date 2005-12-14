@@ -1,8 +1,7 @@
-<& /Elements/Header, Title => loc("Resolution statistics") &>
-<& Elements/Tabs,
-    current_tab => "Reports/Activity/ResolutionStatistics.html",
-    Title => loc("Activity detail") &>
-
+<&|Elements/Wrapper, %ARGS, title => loc("Resolution statistics"),
+    path => "Reports/Activity/ResolutionStatistics.html",
+    query => $query,
+&>
 <& Elements/MiniPlot,
    data => \%plot,
    major => ['Date range','Last 30 days','Last 60 days','Last 90 days','Ever'],
@@ -41,7 +40,7 @@
 <textarea name="query"><% $query %></textarea>
 <& /Elements/Submit, Name => 'LimitReport', Label => loc('Limit') &>
 </form>
-
+</&>
 <%args>
 $query => 'id > 0'
 $start => "'2005/01/01'"

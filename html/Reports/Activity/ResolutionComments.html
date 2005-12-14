@@ -1,8 +1,7 @@
-<& /Elements/Header, Title => loc("Activity detail") &>
-<& Elements/Tabs,
-    current_tab => "Reports/Activity/ResolutionComments.html",
-    Title => loc("Activity detail") &>
-
+<&|Elements/PageWrapper, %ARGS, title => loc("Resolution Comments"), 
+    path => "Reports/Activity/ResolutionComments.html",
+    query => $query
+    &>
 
 <table style="width: 100%">
 <tr>
@@ -29,6 +28,8 @@
 <textarea name="query"><% $query %></textarea>
 <& /Elements/Submit, Name => 'LimitReport', Label => loc('Limit') &>
 </form>
+</&>
+
 <%args>
 $query => 'id > 0'
 $start => "'2005/01/01'"

@@ -1,7 +1,8 @@
-<& /Elements/Header, Title => loc("Activity summary") &>
-<& Elements/Tabs,
-    current_tab => "Reports/Activity/ActivitySummary.html",
-    Title => loc("Activity summary") &>
+<&|Elements/wrapper,
+    path => "Reports/Activity/ActivitySummary.html",
+    title=> loc("Activity summary"),
+    query => $query
+    &>
 
 <& Elements/MiniPlot, data => \%queues &>
 
@@ -33,6 +34,7 @@
 <textarea name="query"><% $query %></textarea>
 <& /Elements/Submit, Name => 'LimitReport', Label => loc('Limit') &>
 </form>
+</&>
 <%args>
 $query => 'id > 0'
 $start => "'2005/01/01'"

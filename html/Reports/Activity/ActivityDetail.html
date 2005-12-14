@@ -1,7 +1,7 @@
-<& /Elements/Header, Title => loc("Activity detail") &>
-<& Elements/Tabs,
-    current_tab => "Reports/Activity/ActivityDetail.html",
-    Title => loc("Activity detail") &>
+<&|Elements/Wrapper, %ARGS, title => loc("Activity detail"),
+    path => "Reports/Activity/ActivityDetail.html",
+    query => $query
+    &>
 
 <& Elements/MiniPlot, data => \%counts &>
 
@@ -26,6 +26,7 @@
 <textarea name="query"><% $query %></textarea>
 <& /Elements/Submit, Name => 'LimitReport', Label => loc('Limit') &>
 </form>
+</&>
 <%args>
 $query => 'id > 0'
 $start => "'2005/01/01'"
@@ -71,7 +72,7 @@ while (my $ticket = $tickets->Next) {
                        time => (split ' ', $txn->CreatedObj->ISO)[1],
                        status => $txn->NewValue || 'new',
                        actor => $txn->CreatorObj->Name,
-                       notes => (substr($txn->Content, 0, 60) ||  $txn->BriefDescription)
+                       notes => ($txn->Content ne 'This transaction appears to have no content' ? substr($txn->Content, 0, 60) :  $txn->BriefDescription)
                      };
     }
 }
