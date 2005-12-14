@@ -1,8 +1,5 @@
-<&|Elements/Wrapper,
-    %ARGS,
+<&|Elements/Wrapper, %ARGS, title => loc("Activity summary"),
     path => "Reports/Activity/ActivitySummary.html",
-    title=> loc("Activity summary"),
-    query => $query
     &>
 
 <& Elements/MiniPlot, data => \%queues &>
@@ -33,13 +30,13 @@
 </&>
 <%args>
 $query => 'id > 0'
-$start => "'2005/01/01'"
-$end   => "'2006/01/01'"
+$start => "2005/01/01"
+$end   => "2006/01/01"
 </%args>
 <%init>
 
 my $tickets = RT::Tickets->new($session{'CurrentUser'});
-$tickets->FromSQL($query . " AND ( Updated >= $start AND Updated <= $end)");
+$tickets->FromSQL($query . " AND ( Updated >= '$start' AND Updated <= '$end')");
 
 my %queues;
 my %status;

@@ -1,0 +1,14 @@
+<&| Elements/Wrapper, %ARGS, Title => loc("Activity detail") &>
+</&>
+
+<%args>
+$type  => undef
+$start => undef
+$end   => undef
+$query => undef
+</%args>
+<%init>
+if ($type) {
+    $m->redirect($type . ".html?" . $m->comp('/Elements/QueryString', query => $query, start => $start, end => $end));
+}
+</%init>

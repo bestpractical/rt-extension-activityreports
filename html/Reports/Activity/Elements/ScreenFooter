@@ -1,3 +1,4 @@
+<& LimitReport, %ARGS &>
 <div align="right">
 % my %printable_args = %ARGS;
 % delete $printable_args{$_} for (qw/path title mode/);
