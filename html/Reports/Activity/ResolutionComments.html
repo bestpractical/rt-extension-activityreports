@@ -11,7 +11,7 @@
 <th colspan="5">Resolution comments</th>
 </tr>
 % for my $item (@items) {
-<tr>
+<tr class="titlerow">
 <td><% $item->{queue} %></td>
 <td><% $item->{id} %></td>
 <td><% $item->{created} %></td>
@@ -23,11 +23,6 @@
 </tr>
 % }
 </table>
-
-<form action="ResolutionComments.html" method="POST" enctype="multipart/form-data">
-<textarea name="query"><% $query %></textarea>
-<& /Elements/Submit, Name => 'LimitReport', Label => loc('Limit') &>
-</form>
 </&>
 
 <%args>

@@ -12,7 +12,7 @@
 <tr>
 <td></td><th colspan="4">Number of tickets closed / Average resolution time per ticket</th>
 </tr>
-<tr>
+<tr class="titlerow">
 <th>Queue</th>
 <th>Date range</th>
 <th>Last 30 days</th>
@@ -28,7 +28,7 @@
 % }
 </tr>
 % }
-<tr>
+<tr class="grandtotal">
 <th>Ticket average</th>
 % for my $period ('Date range','Last 30 days','Last 60 days','Last 90 days','Ever') {
 <td><% $average_resolve_times{$period}{_all_count} %> / <% $average_resolve_times{$period}{_all} %></td>
@@ -36,10 +36,6 @@
 </tr>
 </table>
 
-<form action="ResolutionStatistics.html" method="POST" enctype="multipart/form-data">
-<textarea name="query"><% $query %></textarea>
-<& /Elements/Submit, Name => 'LimitReport', Label => loc('Limit') &>
-</form>
 </&>
 <%args>
 $query => 'id > 0'

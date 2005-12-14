@@ -40,3 +40,32 @@ table.miniplot .graph ul li .data {
 .miniplot .c6 { border: 2px solid #990099; background: #ff00ff; }
 graph .c5 { border: 2px solid #000099; background: #0000ff; }
 .graph .c6 { border: 2px solid #990099; background: #ff00ff; }
+
+tr.titlerow  th { 
+
+  border-bottom: solid black 1px;
+  margin: 0;
+ font-size:80%;
+  text-wrap:  none;
+
+}
+
+tr.grandtotal td{
+    border-top: 1px solid black;
+}
+
+tr.grandtotal th{
+    border-top: 1px solid black;
+}
+
+th.label { 
+ align: left;
+
+}
+
+table.miniplot th.legend {
+ font-style: normal;
+ font-size: 80%;
+
+}
+

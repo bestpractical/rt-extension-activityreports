@@ -6,7 +6,7 @@
 <& Elements/MiniPlot, data => \%counts &>
 
 <table style="width: 100%">
-<tr>
+<tr class="titlerow">
 <th>Queue</th><th>Activity</th><th>Date</th><th>Time</th><th>Ticket #</th><th>User</th><th>Short description</th>
 </tr>
 % for my $item (@items) {
@@ -22,10 +22,6 @@
 % }
 </table>
 
-<form action="ActivityDetail.html" method="POST" enctype="multipart/form-data">
-<textarea name="query"><% $query %></textarea>
-<& /Elements/Submit, Name => 'LimitReport', Label => loc('Limit') &>
-</form>
 </&>
 <%args>
 $query => 'id > 0'

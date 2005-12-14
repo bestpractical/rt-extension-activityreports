@@ -1,4 +1,5 @@
-<&|Elements/wrapper,
+<&|Elements/Wrapper,
+    %ARGS,
     path => "Reports/Activity/ActivitySummary.html",
     title=> loc("Activity summary"),
     query => $query
@@ -7,7 +8,7 @@
 <& Elements/MiniPlot, data => \%queues &>
 
 <table style="width: 100%">
-<tr>
+<tr class="titlerow">
 <th>Queue</th>
 % for my $status (sort keys %status) {
 <th><% $status %></th>
@@ -15,25 +16,20 @@
 <th>Total</th>
 </tr>
 % for my $queue (sort keys %queues) {
-<th><% $queue %></th>
+<th class="label"><% $queue %></th>
 % for my $status (sort keys %status) {
 <td><% $queues{$queue}{$status} || 0 %>
 % }
 <td><% $total{$queue} %></td>
 </tr>
 % }
-<tr>
-<th>Grand Total</th>
+<tr class="grandtotal">
+<th class="label" >Grand Total</th>
 % for my $status (sort keys %status) {
 <td><% $status{$status} %></td>
 % }
 <td><% $total %></td>
 </table>
-
-<form action="ActivitySummary.html" method="POST" enctype="multipart/form-data">
-<textarea name="query"><% $query %></textarea>
-<& /Elements/Submit, Name => 'LimitReport', Label => loc('Limit') &>
-</form>
 </&>
 <%args>
 $query => 'id > 0'

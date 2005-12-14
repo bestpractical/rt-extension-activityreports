@@ -15,7 +15,7 @@
 % }
 </tr><tr>
 % for my $major (@major) {
-<th><% $major %></th>
+<th class="legend"><% $major %></th>
 % }
 </tr>
 </table>
