@@ -1,4 +1,6 @@
-<&| Elements/Wrapper, %ARGS, Title => loc("Activity detail") &>
+<&| Elements/Wrapper, %ARGS, title => loc("Activity reports"), show_print_link => 0 &>
+
+
 </&>
 
 <%args>
@@ -8,6 +10,19 @@ $end   => undef
 $query => undef
 </%args>
 <%init>
+
+unless ($start) {
+    my $then = RT::Date->new($session{'CurrentUser'});
+    $then->Set(Format => 'Unix', Value => time - (86400*7));
+    $ARGS{start} = substr($then->ISO,0,10);
+}
+
+unless ($end) {
+    my $now = RT::Date->new($session{'CurrentUser'});
+    $now->SetToNow();
+    $ARGS{end} = substr($now->ISO,0,10);
+}
+
 if ($type) {
     $m->redirect($type . ".html?" . $m->comp('/Elements/QueryString', query => $query, start => $start, end => $end));
 }

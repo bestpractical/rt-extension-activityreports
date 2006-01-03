@@ -1,6 +1,6 @@
 <form action="index.html" method="POST" enctype="multipart/form-data">
 Query:
-<textarea name="query"><% $query %></textarea><br />
+<textarea name="query" rows="5" cols="80"><% $query %></textarea><br />
 
 Report type: <select name="type">
 <option value="ActivityDetail" <% $ARGS{path} =~ /ActivityDetail/ ? 'selected' : '' %>>Activity detail</option>
