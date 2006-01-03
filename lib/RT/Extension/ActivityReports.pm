@@ -1,3 +1,3 @@
 package RT::Extension::ActivityReports;
 
-our $VERSION = '0.1';
+our $VERSION = '0.2';

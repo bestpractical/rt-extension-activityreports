@@ -35,7 +35,7 @@ $minor => undef
 </%args>
 <%init>
 
-my $max = 0;
+my $max = 1;
 
 my %minor;
 for my $major (keys %{$data}) {
