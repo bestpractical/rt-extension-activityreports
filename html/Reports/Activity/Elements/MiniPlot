@@ -4,7 +4,7 @@
     <ul>
 % my $i = 0;
 % for my $minor (@minor) {
-%   my $percent = int( 100 * ($data->{$major}{$minor} || 0) / $max );
+%   my $percent = int( 100 * ($data->{$major}{$minor} || 0) / ($max || 1) );
         <li class="c<% ($i % 6) + 1%>" style="width: <% $barwidth %>%; 
                                               left: <% $baroffset + $each * $i %>%;
                                               height: <% $percent %>%;"><div class="data"><% $minor %>: <% $percent %>%</div></li>
