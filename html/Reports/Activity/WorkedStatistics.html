@@ -1,0 +1,98 @@
+<&|Elements/Wrapper, %ARGS, title => loc("Time worked statistics"),
+    path => "Reports/Activity/WorkedStatistics.html",
+    &>
+
+<& Elements/MiniPlot,
+  data => \%plot,
+  major => [ @order ],
+  minor => [ "Incoming", "Answered", "Answered in 24h" ]
+&>
+
+<table style="width: 100%">
+<tr class="titlerow">
+<th>Time period</th>
+<th>Incoming emails</th>
+<th>Answered</th>
+<th>Answered within 24h</th>
+<th>Time worked</th>
+<th>Avg. time / person</th>
+<th>Avg. time / email</th>
+<th>Avg. answered / person / hour</th>
+</tr>
+
+% for my $period (@order) {
+<tr>
+<th><% $period %></th>
+<td><% $plot{$period}{"Incoming"} || 0 %></td>
+<td><% $plot{$period}{"Answered"} || 0 %></td>
+<td><% $plot{$period}{"Answered in 24h"} || 0 %></td>
+<td><% $timetaken{$period} || 0 %></td>
+<td><% $emails{$period} ? $timetaken{$period} / (scalar keys %{$users{$period}}) : 0 %></td>
+<td><% $emails{$period} ? $timetaken{$period} / $emails{$period} : 0 %></td>
+<td><% $emails{$period} ? $emails{$period} / ((scalar keys %{$users{$period}}) * $days{$period}*24) : 0 %></td>
+</tr>
+% }
+
+</table>
+
+</&>
+<%args>
+$query => 'id > 0'
+$start => "2005/01/01"
+$end   => "2006/01/01"
+</%args>
+<%init>
+
+my %labels = (1 => "Yesterday", 7 => "Last 7 days", 30 => "Last 30 days", 365 => "Last 365 days");
+my %days = reverse %labels;
+my @order = ("Date range", (map {$labels{$_}} sort {$a <=> $b} keys %labels));
+my %times;
+for (keys %days) {
+    $times{$_} = RT::Date->new($session{'CurrentUser'});
+    $times{$_}->Set(Format => 'Unix', Value => ( time - (86400*$days{$_})));
+}
+
+# Find out how long the hand-picked date range is
+{
+    my $startDate = RT::Date->new($session{'CurrentUser'});
+    $startDate->Set(Format => 'unknown', Value => $start);
+    my $endDate   = RT::Date->new($session{'CurrentUser'});
+    $endDate->Set(Format => 'unknown', Value => $end);
+    $days{"Date range"} = $endDate->Diff($startDate)/86400;
+}
+
+my %queries;
+$queries{'Date range'}    = "(Created >= '$start' AND Created <= '$end')";
+$queries{$_}              = "(Created >= '".$times{$_}->ISO."')" for keys %times;
+
+my(%plot, %timetaken, %users, %emails);
+foreach my $period (@order) {
+    my $tix = RT::Tickets->new($session{'CurrentUser'});
+    $tix->FromSQL($query . " AND " .$queries{$period});
+
+    while (my $ticket = $tix->Next) {
+        $plot{$period}{"Incoming"}++;
+        $plot{$period}{"Answered"}++ if $ticket->Told;
+
+        # Find out when we *first* responded to this ticket
+        my $firstTold;
+        my $txns = $ticket->Transactions;
+        while (my $txn = $txns->Next) {
+            if (not defined $firstTold and $txn->Type eq "Correspond") {
+                $firstTold = $txn->Created;
+            }
+            if ($txn->TimeTaken) {
+                $timetaken{$period} += $txn->TimeTaken;
+                $users{$period}{$txn->Creator}++;
+                $emails{$period}++;
+            }
+        }
+        if ($firstTold) {
+            my $told = RT::Date->new($session{'CurrentUser'});
+            $told->Set(Format => 'ISO', $firstTold);
+            $plot{$period}{"Answered in 24h"}++ if $told->Diff($ticket->Created) <= 86400;
+        }
+    }
+}
+
+</%init>
