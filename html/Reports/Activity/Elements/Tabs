@@ -28,6 +28,9 @@ if ($m->caller_args(-1)->{'query'}) {
                 d => { title => 'Resolution statistics',
                        path  => 'Reports/Activity/ResolutionStatistics.html'.$args,
                      },
+                e => { title => 'Time worked statistics',
+                       path  => 'Reports/Activity/WorkedStatistics.html'.$args,
+                     },
                };
 }
 

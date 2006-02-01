@@ -39,6 +39,8 @@ $summary_tickets->FromSQL(
 
 my @items;
 while ( my $ticket = $summary_tickets->Next ) {
+    my $whiteboard = $ticket->CustomFieldValues('Whiteboard') ?
+      $ticket->FirstCustomFieldValue('Whiteboard') : undef;
     push @items, {
         queue    => $ticket->QueueObj->Name,
         id       => $ticket->id,
@@ -49,7 +51,7 @@ while ( my $ticket = $summary_tickets->Next ) {
                 $ticket->ResolvedObj->Unix - $ticket->CreatedObj->Unix
             )
         ),
-        whiteboard => $ticket->FirstCustomFieldValue('Whiteboard')
+        whiteboard => $whiteboard,
     };
 }
 

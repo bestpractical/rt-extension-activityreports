@@ -62,8 +62,8 @@ for (keys %days) {
 }
 
 my %queries;
-$queries{'Date range'}    = "(Created >= '$start' AND Created <= '$end')";
-$queries{$_}              = "(Created >= '".$times{$_}->ISO."')" for keys %times;
+$queries{'Date range'}    = "(Updated >= '$start' AND Updated <= '$end')";
+$queries{$_}              = "(Updated >= '".$times{$_}->ISO."')" for keys %times;
 
 my(%plot, %timetaken, %users, %emails);
 foreach my $period (@order) {
