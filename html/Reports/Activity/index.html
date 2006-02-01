@@ -7,9 +7,10 @@
 $type  => undef
 $start => undef
 $end   => undef
-$query => "Status = 'resolved'"
+$query => undef
 </%args>
 <%init>
+$ARGS{query} = "Status = 'resolved'" unless $ARGS{query} =~ /\S/;
 
 unless ($start) {
     my $then = RT::Date->new($session{'CurrentUser'});

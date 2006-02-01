@@ -1,0 +1,21 @@
+This extension is Copyright (C) 2005 Best Practical Solutions, LLC.
+
+It is freely redistributable under the terms of version 2 of the GNU GPL.
+
+SUMMARY ---
+
+RT-Extension-ActivityReports provides a number of simple reporting
+tools to analyze the activity of your RT instance.
+
+INSTALLATION ---
+
+To install the extension:
+
+$ perl Makefile.PL
+
+(it may prompt you for the path to your RT.pm, if it can't
+automatically detect it.)
+
+$ make
+$ make install
+
