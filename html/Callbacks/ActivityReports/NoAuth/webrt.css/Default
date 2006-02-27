@@ -42,30 +42,29 @@ graph .c5 { border: 2px solid #000099; background: #0000ff; }
 .graph .c6 { border: 2px solid #990099; background: #ff00ff; }
 
 tr.titlerow  th { 
-
-  border-bottom: solid black 1px;
-  margin: 0;
- font-size:80%;
-  text-wrap:  none;
-
+    border-bottom: solid black 1px;
+    margin: 0;
+    font-size:80%;
+    text-wrap:  none;
 }
 
-tr.grandtotal td{
-    border-top: 1px solid black;
-}
-
-tr.grandtotal th{
+tr.grandtotal td, tr.grandtotal th{
     border-top: 1px solid black;
 }
 
 th.label { 
- align: left;
-
+    align: left;
 }
 
 table.miniplot th.legend {
- font-style: normal;
- font-size: 80%;
-
+    font-style: normal;
+    font-size: 80%;
 }
 
+table.numberreport {
+    width: 100%;
+}
+table.numberreport td {
+    padding: 0 1em;
+    text-align: right;
+}

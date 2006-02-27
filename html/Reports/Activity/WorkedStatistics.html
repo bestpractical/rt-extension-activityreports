@@ -2,14 +2,17 @@
     path => "Reports/Activity/WorkedStatistics.html",
     &>
 
-<table style="width: 100%">
+<& Elements/MiniPlot, data => \%plot, minor => ["< 24h","24-48h","> 48h"] &>
+
+<br />
+<table class="numberreport">
 <tr class="titlerow">
-<td>&nbsp;</td>
+<th rowspan="2">Queue</th>
 <th colspan="6">Created in date range</th>
 <th colspan="6">Resolved in date range</th>
+<th rowspan="2">Total tickets still open</th>
+</tr>
 <tr class="titlerow">
-<th>Queue</th>
-
 <th>Total tickets</th>
 <th>Total resolutions</th>
 <th>Resolved within 24h</th>
@@ -23,35 +26,37 @@
 <th>Resolved within 24-48h</th>
 <th>Resolved in more than 48h</th>
 <th>Tickets currently open</th>
-
-<th>Total tickets still open</th>
-
 </tr>
 
+% my @totals; 
 % for my $queue (sort {lc $queue{$a}{name} cmp lc $queue{$b}{name}} keys %queue) {
+% my @row; my $i = 0;
 <tr>
 <th><% $queue{$queue}{name} %></th>
 % for my $bin (qw/created resolved/) {
-% $queue{$queue}{$bin} ||= {tickets => 0, resolves => 0, 24 => 0, 48 => 0, more => 0, open => 0};
-<td><% $queue{$queue}{$bin}{tickets} %></td>
-<td><% $queue{$queue}{$bin}{resolves} %></td>
-<td><% $queue{$queue}{$bin}{24} %></td>
-<td><% $queue{$queue}{$bin}{48} %></td>
-<td><% $queue{$queue}{$bin}{more} %></td>
-<td><% $queue{$queue}{$bin}{open} %></td>
+<td><% $row[$i++] = $queue{$queue}{$bin}{tickets}  || 0%></td>
+<td><% $row[$i++] = $queue{$queue}{$bin}{resolves} || 0%></td>
+<td><% $row[$i++] = $queue{$queue}{$bin}{24} || 0 %></td>
+<td><% $row[$i++] = $queue{$queue}{$bin}{48} || 0 %></td>
+<td><% $row[$i++] = $queue{$queue}{$bin}{more} || 0 %></td>
+<td><% $row[$i++] = $queue{$queue}{$bin}{open} || 0 %></td>
 % }
 
-<td>?</td>
+<td><% $row[$i++] = $queue{$queue}{total_open} %></td>
 </tr>
+% $totals[$_] += $row[$_] for 0..$#row;
 % }
-<tr>
-
+<tr class="grandtotal">
+<th>Total</th>
+% for (@totals) {
+<td><% $_ %></td>
+% }
 </tr>
-
 </table>
 
-<table style="width: 100%">
-<tr>
+<br />
+<table class="numberreport">
+<tr class="titlerow">
 <th>Username</th>
 <th>Queue</th>
 <th>Resolved within 24h</th>
@@ -66,17 +71,30 @@
 <tr>
 <th><% $user %></th>
 <th><% $queue{$queue}{name} %></th>
-<td><% $user{$user}{$queue}{24} %></td>
-<td><% $user{$user}{$queue}{48} %></td>
-<td><% $user{$user}{$queue}{more} %></td>
-<td><% sprintf("%.02f",$user{$user}{$queue}{time}/60) %></td>
-<td><% sprintf("%.02f",$user{$user}{$queue}{time}/(scalar keys %{$user{$user}{$queue}{tickets}})) %></td>
-<td><% sprintf("%.02f",$user{$user}{$queue}{resolves}/($user{$user}{$queue}{time}/60)) %></td>
+<td><% $user{$user}{$queue}{24}   || 0 %></td>
+<td><% $user{$user}{$queue}{48}   || 0 %></td>
+<td><% $user{$user}{$queue}{more} || 0 %></td>
+<td><% sprintf("%.02f",$user{$user}{$queue}{time}/60 || 0) %></td>
+<td><% sprintf("%.02f",$user{$user}{$queue}{time}/(scalar keys %{$user{$user}{$queue}{tickets}}) || 0) %></td>
+<td><% $user{$user}{$queue}{time} ? sprintf("%.02f",$user{$user}{$queue}{resolves}/($user{$user}{$queue}{time}/60) || 0) : "-" %></td>
 </tr>
 % }
 % }
 </table>
 
+<br />
+<h3>Still open tickets created in date range</h3>
+<& /Elements/TicketList, 
+    Query   => qq{ ( Created >= '$start'  AND Created <= '$end' ) AND ( Status = 'new'  OR Status = 'open' ) },
+    OrderBy => $ARGS{OrderBy} || 'Created',
+    Order   => $ARGS{Order} || 'ASC',
+    Format  => q{'   <b><a href="/Ticket/Display.html?id=__id__">__id__</a></b>/TITLE:#','<a href="/Ticket/Display.html?id=__id__">__Subject__</a>/TITLE:Subject','__QueueName__','__Created__'},
+    Rows    => $ARGS{Rows} || 50,
+    Page    => $ARGS{Page} || 1,
+    BaseURL => $RT::WebPath."/Reports/Activity/WorkedStatistics.html?".$m->comp("/Elements/QueryString",start=>$start,end=>$end,query=>$query)."&",
+    AllowSorting => 1,
+&>
+<br />
 
 </&>
 <%args>
@@ -85,17 +103,25 @@ $start => "2005/01/01"
 $end   => "2006/01/01"
 </%args>
 <%init>
-$query = join " AND ", map {"($_)"} grep {/\S/} ($query, "Updated >= '$start' AND Updated <= '$end'");
-
-my(%queue, %user);
-my $tix = RT::Tickets->new($session{'CurrentUser'});
-$tix->FromSQL($query);
+my $allquery = join " AND ", map {"($_)"} grep {/\S/} ($query, "Updated >= '$start' AND Updated <= '$end'");
 
 my $startDate = RT::Date->new($session{'CurrentUser'});
 $startDate->Set(Format => 'unknown', Value => $start);
 my $endDate   = RT::Date->new($session{'CurrentUser'});
 $endDate->Set(Format => 'unknown', Value => $end);
 
+my(%queue, %user);
+my $Queues = RT::Queues->new($session{'CurrentUser'}); 
+$Queues->UnLimit();
+while (my $queue = $Queues->Next) {
+    my $tix = RT::Tickets->new($session{'CurrentUser'});
+    $tix->FromSQL("Queue = '@{[$queue->Name]}' AND (Status = 'open' OR Status = 'new')");
+    $queue{$queue->Id}{name} = $queue->Name;
+    $queue{$queue->Id}{total_open} = $tix->Count();
+}
+
+my $tix = RT::Tickets->new($session{'CurrentUser'});
+$tix->FromSQL($allquery);
 while (my $ticket = $tix->Next) {
     my $created  = $ticket->CreatedObj;
     my $resolved = $ticket->ResolvedObj;
@@ -105,8 +131,6 @@ while (my $ticket = $tix->Next) {
     # "bin" is either "created" and/or "resolved"; it could be neither.
     my %bins;
     $bins{created} = 1 if $created->Unix > $startDate->Unix and $created->Unix < $endDate->Unix;
-
-    $queue{$ticket->Queue}{name} ||= $ticket->QueueObj->Name;
 
     # Find out when we *first* responded to this ticket
     my $opened = $created;
@@ -166,5 +190,12 @@ while (my $ticket = $tix->Next) {
     }
 }
 
-
+my %plot;
+for (keys %queue) {
+    $plot{$queue{$_}{name}} = {
+        "< 24h"  => $queue{$_}{resolved}{24},
+        "24-48h" => $queue{$_}{resolved}{48},
+        "> 48h"  => $queue{$_}{resolved}{more},
+    };
+}
 </%init>
