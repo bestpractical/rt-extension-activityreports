@@ -86,12 +86,11 @@
 <h3>Still open tickets created in date range</h3>
 <& /Elements/TicketList, 
     Query   => qq{ ( Created >= '$start'  AND Created <= '$end' ) AND ( Status = 'new'  OR Status = 'open' ) },
-    OrderBy => $ARGS{OrderBy} || 'Created',
-    Order   => $ARGS{Order} || 'ASC',
+    OrderBy => 'Created',
+    Order   => 'ASC',
     Format  => q{'   <b><a href="/Ticket/Display.html?id=__id__">__id__</a></b>/TITLE:#','<a href="/Ticket/Display.html?id=__id__">__Subject__</a>/TITLE:Subject','__QueueName__','__Created__'},
-    Rows    => $ARGS{Rows} || 50,
-    Page    => $ARGS{Page} || 1,
-    BaseURL => $RT::WebPath."/Reports/Activity/WorkedStatistics.html?".$m->comp("/Elements/QueryString",start=>$start,end=>$end,query=>$query)."&",
+    Rows    => 0,
+    BaseURL => $RT::WebPath."/Search/Results.html?",
     AllowSorting => 1,
 &>
 <br />
