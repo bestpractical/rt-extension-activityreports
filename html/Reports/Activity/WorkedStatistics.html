@@ -2,97 +2,169 @@
     path => "Reports/Activity/WorkedStatistics.html",
     &>
 
-<& Elements/MiniPlot,
-  data => \%plot,
-  major => [ @order ],
-  minor => [ "Incoming", "Answered", "Answered in 24h" ]
-&>
-
 <table style="width: 100%">
 <tr class="titlerow">
-<th>Time period</th>
-<th>Incoming emails</th>
-<th>Answered</th>
-<th>Answered within 24h</th>
-<th>Time worked</th>
-<th>Avg. time / person</th>
-<th>Avg. time / email</th>
-<th>Avg. answered / person / hour</th>
+<td>&nbsp;</td>
+<th colspan="6">Created in date range</th>
+<th colspan="6">Resolved in date range</th>
+<tr class="titlerow">
+<th>Queue</th>
+
+<th>Total tickets</th>
+<th>Total resolutions</th>
+<th>Resolved within 24h</th>
+<th>Resolved within 24-48h</th>
+<th>Resolved in more than 48h</th>
+<th>Tickets currently open</th>
+
+<th>Total tickets</th>
+<th>Total resolutions</th>
+<th>Resolved within 24h</th>
+<th>Resolved within 24-48h</th>
+<th>Resolved in more than 48h</th>
+<th>Tickets currently open</th>
+
+<th>Total tickets still open</th>
+
 </tr>
 
-% for my $period (@order) {
+% for my $queue (sort {lc $queue{$a}{name} cmp lc $queue{$b}{name}} keys %queue) {
 <tr>
-<th><% $period %></th>
-<td><% $plot{$period}{"Incoming"} || 0 %></td>
-<td><% $plot{$period}{"Answered"} || 0 %></td>
-<td><% $plot{$period}{"Answered in 24h"} || 0 %></td>
-<td><% $timetaken{$period} || 0 %></td>
-<td><% $emails{$period} ? $timetaken{$period} / (scalar keys %{$users{$period}}) : 0 %></td>
-<td><% $emails{$period} ? $timetaken{$period} / $emails{$period} : 0 %></td>
-<td><% $emails{$period} ? $emails{$period} / ((scalar keys %{$users{$period}}) * $days{$period}*24) : 0 %></td>
+<th><% $queue{$queue}{name} %></th>
+% for my $bin (qw/created resolved/) {
+% $queue{$queue}{$bin} ||= {tickets => 0, resolves => 0, 24 => 0, 48 => 0, more => 0, open => 0};
+<td><% $queue{$queue}{$bin}{tickets} %></td>
+<td><% $queue{$queue}{$bin}{resolves} %></td>
+<td><% $queue{$queue}{$bin}{24} %></td>
+<td><% $queue{$queue}{$bin}{48} %></td>
+<td><% $queue{$queue}{$bin}{more} %></td>
+<td><% $queue{$queue}{$bin}{open} %></td>
+% }
+
+<td>?</td>
 </tr>
 % }
+<tr>
+
+</tr>
 
 </table>
 
+<table style="width: 100%">
+<tr>
+<th>Username</th>
+<th>Queue</th>
+<th>Resolved within 24h</th>
+<th>Resolved within 24-28h</th>
+<th>Resolved in more than 48h</th>
+<th>Time worked</th>
+<th>Average time per ticket</th>
+<th>Average resolutions per hour</th>
+</tr>
+% for my $user (sort keys %user) {
+% for my $queue (sort {lc $queue{$a}{name} cmp lc $queue{$b}{name}} keys %{$user{$user}}) {
+<tr>
+<th><% $user %></th>
+<th><% $queue{$queue}{name} %></th>
+<td><% $user{$user}{$queue}{24} %></td>
+<td><% $user{$user}{$queue}{48} %></td>
+<td><% $user{$user}{$queue}{more} %></td>
+<td><% sprintf("%.02f",$user{$user}{$queue}{time}/60) %></td>
+<td><% sprintf("%.02f",$user{$user}{$queue}{time}/(scalar keys %{$user{$user}{$queue}{tickets}})) %></td>
+<td><% sprintf("%.02f",$user{$user}{$queue}{resolves}/($user{$user}{$queue}{time}/60)) %></td>
+</tr>
+% }
+% }
+</table>
+
+
 </&>
 <%args>
-$query => 'id > 0'
+$query => ""
 $start => "2005/01/01"
 $end   => "2006/01/01"
 </%args>
 <%init>
+$query = join " AND ", map {"($_)"} grep {/\S/} ($query, "Updated >= '$start' AND Updated <= '$end'");
 
-my %labels = (1 => "Yesterday", 7 => "Last 7 days", 30 => "Last 30 days", 365 => "Last 365 days");
-my %days = reverse %labels;
-my @order = ("Date range", (map {$labels{$_}} sort {$a <=> $b} keys %labels));
-my %times;
-for (keys %days) {
-    $times{$_} = RT::Date->new($session{'CurrentUser'});
-    $times{$_}->Set(Format => 'Unix', Value => ( time - (86400*$days{$_})));
-}
+my(%queue, %user);
+my $tix = RT::Tickets->new($session{'CurrentUser'});
+$tix->FromSQL($query);
 
-# Find out how long the hand-picked date range is
-{
-    my $startDate = RT::Date->new($session{'CurrentUser'});
-    $startDate->Set(Format => 'unknown', Value => $start);
-    my $endDate   = RT::Date->new($session{'CurrentUser'});
-    $endDate->Set(Format => 'unknown', Value => $end);
-    $days{"Date range"} = $endDate->Diff($startDate)/86400;
-}
+my $startDate = RT::Date->new($session{'CurrentUser'});
+$startDate->Set(Format => 'unknown', Value => $start);
+my $endDate   = RT::Date->new($session{'CurrentUser'});
+$endDate->Set(Format => 'unknown', Value => $end);
 
-my %queries;
-$queries{'Date range'}    = "(Updated >= '$start' AND Updated <= '$end')";
-$queries{$_}              = "(Updated >= '".$times{$_}->ISO."')" for keys %times;
+while (my $ticket = $tix->Next) {
+    my $created  = $ticket->CreatedObj;
+    my $resolved = $ticket->ResolvedObj;
 
-my(%plot, %timetaken, %users, %emails);
-foreach my $period (@order) {
-    my $tix = RT::Tickets->new($session{'CurrentUser'});
-    $tix->FromSQL($query . " AND " .$queries{$period});
+    $RT::Logger->debug("Looking at ticket @{[$ticket->id]}");
+    
+    # "bin" is either "created" and/or "resolved"; it could be neither.
+    my %bins;
+    $bins{created} = 1 if $created->Unix > $startDate->Unix and $created->Unix < $endDate->Unix;
 
-    while (my $ticket = $tix->Next) {
-        $plot{$period}{"Incoming"}++;
-        $plot{$period}{"Answered"}++ if $ticket->Told;
+    $queue{$ticket->Queue}{name} ||= $ticket->QueueObj->Name;
 
-        # Find out when we *first* responded to this ticket
-        my $firstTold;
-        my $txns = $ticket->Transactions;
-        while (my $txn = $txns->Next) {
-            if (not defined $firstTold and $txn->Type eq "Correspond") {
-                $firstTold = $txn->Created;
+    # Find out when we *first* responded to this ticket
+    my $opened = $created;
+    my $txns = $ticket->Transactions;
+    while (my $txn = $txns->Next) {
+        $RT::Logger->debug( "  TXN: @{[$txn->Created]}" );
+        # Abort when we hit transactions after our end date
+        last if $txn->CreatedObj->Unix > $endDate->Unix;
+
+        if (not $opened and $txn->Type eq "Status" and $txn->NewValue =~ /new|open/) {
+            # As each one goes by, notice when tickets pop open
+            $opened = $txn->CreatedObj;
+        } elsif ($opened and $txn->Type eq "Status" and $txn->NewValue eq "resolved") {
+            # Or are resolved
+            if ($txn->CreatedObj->Unix >= $startDate->Unix) {
+                # We only *really* care about it when it was resolved
+                # in the date range.  Now this counts in the "resolved
+                # in range" bin, possibly in addition to "created in
+                # range" bin.
+                $bins{resolved} = 1;
+
+                # Figure out which "time to resolve" bucket it goes
+                # in.  Buckets aren't bins!  Bucket is time to resolve
+                # a ticket.  Bin is if the ticket was created or
+                # resolved at all in the time range.
+                my $time = $txn->CreatedObj->Diff($opened);
+                $time = ($time < 24*60*60 ? "24" : ($time < 48*60*60 ? "48" : "more"));
+
+                # Keep track of resolves,resolves per time bucket, and tickets for each bin
+                $queue{$ticket->Queue}{$_}{$time}++ for keys %bins;
+                $queue{$ticket->Queue}{$_}{resolves}++ for keys %bins;
+                # Tickets per bin is done at the end
+
+                # Also for the creator-queue combo
+                $user{$txn->CreatorObj->Name}{$ticket->Queue}{$time}++;
+                $user{$txn->CreatorObj->Name}{$ticket->Queue}{resolves}++;
+                $user{$txn->CreatorObj->Name}{$ticket->Queue}{tickets}{$ticket->Id}++;
             }
-            if ($txn->TimeTaken) {
-                $timetaken{$period} += $txn->TimeTaken;
-                $users{$period}{$txn->Creator}++;
-                $emails{$period}++;
-            }
+            # Forget when we were opened
+            undef $opened;
         }
-        if ($firstTold) {
-            my $told = RT::Date->new($session{'CurrentUser'});
-            $told->Set(Format => 'ISO', $firstTold);
-            $plot{$period}{"Answered in 24h"}++ if $told->Diff($ticket->Created) <= 86400;
+
+        if ($txn->TimeTaken and $txn->CreatedObj->Unix >= $startDate->Unix) {
+            # If this txn has some time taken, and is in the target
+            # range, record it.
+            $queue{$ticket->Queue}{time} += $txn->TimeTaken;
+            $user{$txn->CreatorObj->Name}{$ticket->Queue}{time} += $txn->TimeTaken;
+            $user{$txn->CreatorObj->Name}{$ticket->Queue}{tickets}{$ticket->Id}++;
         }
     }
+
+    # If we cared about this ticket in any way..
+    for my $bin (keys %bins) {
+        # Record the number of open and total tickets for each bin.
+        $queue{$ticket->Queue}{$bin}{tickets}++;
+        $queue{$ticket->Queue}{$bin}{open}++ if $ticket->Status =~ /new|open/;
+    }
 }
+
 
 </%init>
