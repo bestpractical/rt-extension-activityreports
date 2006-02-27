@@ -103,8 +103,6 @@ $start => "2005/01/01"
 $end   => "2006/01/01"
 </%args>
 <%init>
-my $allquery = join " AND ", map {"($_)"} grep {/\S/} ($query, "Updated >= '$start' AND Updated <= '$end'");
-
 my $startDate = RT::Date->new($session{'CurrentUser'});
 $startDate->Set(Format => 'unknown', Value => $start);
 my $endDate   = RT::Date->new($session{'CurrentUser'});
@@ -121,7 +119,7 @@ while (my $queue = $Queues->Next) {
 }
 
 my $tix = RT::Tickets->new($session{'CurrentUser'});
-$tix->FromSQL($allquery);
+$tix->FromSQL(join " AND ", map {"($_)"} grep {/\S/} ($query, "Updated >= '$start' AND Updated <= '$end'"));
 while (my $ticket = $tix->Next) {
     my $created  = $ticket->CreatedObj;
     my $resolved = $ticket->ResolvedObj;

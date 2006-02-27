@@ -25,7 +25,7 @@
 </&>
 
 <%args>
-$query => 'id > 0'
+$query => ''
 $start => "2005/01/01"
 $end   => "2006/01/01"
 </%args>
@@ -35,7 +35,7 @@ use Time::Duration;
 
 my $summary_tickets = RT::Tickets->new( $session{'CurrentUser'} );
 $summary_tickets->FromSQL(
-    $query . " AND (Status = 'resolved') AND ( Updated >= '$start' AND Updated <= '$end')" );
+    join " AND ", map {"($_)"} grep {/\S/} ($query, "(Status = 'resolved') AND ( Updated >= '$start' AND Updated <= '$end')"));
 
 my @items;
 while ( my $ticket = $summary_tickets->Next ) {

@@ -23,15 +23,13 @@
 
 </&>
 <%args>
-$query => 'id > 0'
+$query => ''
 $start => "2005/01/01"
 $end   => "2006/01/01"
 </%args>
 <%init>
-
-
 my $summary_tickets = RT::Tickets->new($session{'CurrentUser'});
-$summary_tickets->FromSQL($query . " AND ( Updated >= '$start' AND Updated <= '$end')");
+$summary_tickets->FromSQL(join " AND ", map {"($_)"} grep {/\S/} ($query, "Updated >= '$start' AND Updated <= '$end'"));
 my %counts;
 while (my $ticket = $summary_tickets->Next) {
     my $txns = $ticket->Transactions;

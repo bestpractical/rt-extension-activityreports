@@ -38,7 +38,7 @@
 
 </&>
 <%args>
-$query => 'id > 0'
+$query => ''
 $start => "2005/01/01"
 $end   => "2006/01/01"
 </%args>
@@ -63,7 +63,7 @@ my %closed;
 my %queues;
 foreach my $period (keys %queries) {
     my $tix = RT::Tickets->new($session{'CurrentUser'});
-    $tix->FromSQL($query . " AND " .$queries{$period});
+    $tix->FromSQL(join " AND ", map {"($_)"} grep {/\S/} ($query, $queries{$period}));
 
     while (my $ticket = $tix->Next) {
         push @{ $closed{$period}{$ticket->QueueObj->Name}}, $ticket;
