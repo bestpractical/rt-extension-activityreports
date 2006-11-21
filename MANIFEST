@@ -3,6 +3,7 @@ html/Callbacks/ActivityReports/NoAuth/webrt.css/Default
 html/Callbacks/ActivityReports/Search/Results.html/SearchActions
 html/Reports/Activity/ActivityDetail.html
 html/Reports/Activity/ActivitySummary.html
+html/Reports/Activity/Elements/ActivityDetail
 html/Reports/Activity/Elements/LimitReport
 html/Reports/Activity/Elements/MiniPlot
 html/Reports/Activity/Elements/PrintFooter
