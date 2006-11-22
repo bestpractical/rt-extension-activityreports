@@ -1,4 +1,5 @@
 <&| Elements/Wrapper, %ARGS, title => loc("Activity reports"), show_print_link => 0 &>
+<& /Elements/ListActions, actions => \@actions &>
 
 % if ($type) {
 <form method="post" action="index.html" name="SaveChart">
@@ -40,41 +41,29 @@ unless ($end) {
     $ARGS{end} = substr($now->ISO,0,10);
 }
 
-my @Objects;
-
-push @Objects,  $session{CurrentUser}->UserObj;
-
-my $groups = RT::Groups->new($session{'CurrentUser'});
-
-$groups->LimitToUserDefinedGroups;
-$groups->WithMember(PrincipalId => $session{'CurrentUser'}->Id,
-                    Recursively => 1);
-
-push (@Objects, @{$groups->ItemsArrayRef()});
+my @Objects = RT::SavedSearches->new( $session{CurrentUser} )->_PrivacyObjects;
 push @Objects, RT::System->new($session{'CurrentUser'})
     if $session{'CurrentUser'}->HasRight( Object=> $RT::System,
-					  Right => 'SuperUser');
+                                          Right => 'SuperUser');
 
+my @actions;
 if ( $ARGS{Save} ) {
-    if ( $ARGS{'Owner'} =~ /^(.*?)-(\d+)$/ ) {
-        # We're saving a new search
-        my $obj_type = $1;
-        my $obj_id   = $2;
-        # Find out if we're saving on the user, or a group
-        my $container_object = _load_container_object( $obj_type, $obj_id );
-        my ( $search_id, $search_msg ) = $container_object->AddAttribute(
-            Name        => 'SavedSearch',
-            Description => $Description,
-            Content     => {
-                SearchType => 'ActivityReport',
+    my $saved_search = RT::SavedSearch->new( $session{'CurrentUser'} );
+    my ( $ok, $search_msg ) = $saved_search->Save(
+        Privacy      => $ARGS{'Owner'},
+        Name         => $Description,
+        Type         => 'ActivityReport',
+        SearchParams => {
                 Query      => $query,
                 ReportType => $type,
                 Start      => $start,
                 End        => $end,
-
-            }
-        );
-
+        });
+    if ($ok) {
+	push @actions, loc( 'Report [_1] saved.', $Description );
+    }
+    else {
+	push @actions, [ loc("Can't save report").': '.loc($search_msg), 0 ];
     }
 }
 
