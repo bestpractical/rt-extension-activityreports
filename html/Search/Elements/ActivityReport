@@ -1,0 +1,7 @@
+<%args>
+$ReportType  => undef
+$Start => undef
+$End   => undef
+$Query => undef
+</%args>
+<& '/Reports/Activity/Elements/'.$ReportType, start => $Start, end => $End, query => $Query &>
