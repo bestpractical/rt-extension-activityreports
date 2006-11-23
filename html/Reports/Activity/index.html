@@ -1,32 +1,18 @@
 <&| Elements/Wrapper, %ARGS, title => loc("Activity reports"), show_print_link => 0 &>
 <& /Elements/ListActions, actions => \@actions &>
 
-% if ($type) {
-<form method="post" action="index.html" name="SaveChart">
-
-<& /Search/Elements/SelectSearchObject, Name => 'Owner', Objects => \@Objects &><br />
-
-<&|/l&>Description</&>:<br>
-<font size="-1"><input size="25" name="Description" value="" /></font>
-<input type="hidden" class="hidden" name="query" value="<% $query %>" />
-<input type="hidden" class="hidden" name="start" value="<% $start %>" />
-<input type="hidden" class="hidden" name="end" value="<% $end %>" />
-<input type="hidden" class="hidden" name="type" value="<% $type %>" />
-
-<input type="submit" name="Save" value="<%loc('Save')%>" class="button" />
-</form>
-
-<& /Search/Elements/ActivityReport, Query => $query, Start => $start, End => $end, ReportType => $type &>
+% if ($ReportType) {
+<& /Widgets/SavedSearch:show, %ARGS, Action => 'index.html', self => $saved_search &>
+<& /Search/Elements/ActivityReport, %ARGS &>
 % }
 
 </&>
 
 <%args>
-$type  => undef
+$ReportType  => undef
 $start => undef
 $end   => undef
 $query => undef
-$Description => undef
 </%args>
 <%init>
 unless ($start) {
@@ -41,30 +27,15 @@ unless ($end) {
     $ARGS{end} = substr($now->ISO,0,10);
 }
 
-my @Objects = RT::SavedSearches->new( $session{CurrentUser} )->_PrivacyObjects;
-push @Objects, RT::System->new($session{'CurrentUser'})
-    if $session{'CurrentUser'}->HasRight( Object=> $RT::System,
-                                          Right => 'SuperUser');
+$ARGS{ReportType} ||= $ARGS{type};
+$ARGS{Start}      ||= $ARGS{start};
+$ARGS{End}        ||= $ARGS{end};
+$ARGS{Query}      ||= $ARGS{query};
 
-my @actions;
-if ( $ARGS{Save} ) {
-    my $saved_search = RT::SavedSearch->new( $session{'CurrentUser'} );
-    my ( $ok, $search_msg ) = $saved_search->Save(
-        Privacy      => $ARGS{'Owner'},
-        Name         => $Description,
-        Type         => 'ActivityReport',
-        SearchParams => {
-                Query      => $query,
-                ReportType => $type,
-                Start      => $start,
-                End        => $end,
-        });
-    if ($ok) {
-	push @actions, loc( 'Report [_1] saved.', $Description );
-    }
-    else {
-	push @actions, [ loc("Can't save report").': '.loc($search_msg), 0 ];
-    }
-}
+my $saved_search = $m->comp( '/Widgets/SavedSearch:new',
+    SearchType   => 'ActivityReport',
+    SearchFields => [qw(Query ReportType Start End)] );
+
+my @actions = $m->comp( '/Widgets/SavedSearch:process', args => \%ARGS, self => $saved_search );
 
 </%init>
