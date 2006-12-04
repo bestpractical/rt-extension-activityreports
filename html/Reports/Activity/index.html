@@ -2,7 +2,7 @@
 <& /Elements/ListActions, actions => \@actions &>
 
 % if ($ReportType) {
-<& /Widgets/SavedSearch:show, %ARGS, Action => 'index.html', self => $saved_search &>
+<& /Widgets/SavedSearch:show, %ARGS, Action => 'index.html', self => $saved_search, Title => 'Saved Activity reports' &>
 <& /Search/Elements/ActivityReport, %ARGS &>
 % }
 
