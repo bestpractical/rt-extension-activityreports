@@ -1,7 +1,7 @@
 <%args>
 $title => undef
 $path => undef
-$query => undef
+$Query => undef
 </%args>
 <HTML>
 <HEAD>
@@ -28,5 +28,5 @@ $query => undef
 </tr>
 </table>
 <hr/>
-<&|/l&>Report criteria:</&> <%$query%>
+<&|/l&>Report criteria:</&> <%$Query%>
 <hr />

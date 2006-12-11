@@ -1,8 +1,10 @@
-<&| Elements/Wrapper, %ARGS, title => loc("Activity reports"), show_print_link => 0 &>
+<&| Elements/Wrapper, %ARGS, title => loc("Activity reports") &>
 <& /Elements/ListActions, actions => \@actions &>
 
 % if ($ReportType) {
-<& /Widgets/SavedSearch:show, %ARGS, Action => 'index.html', self => $saved_search, Title => 'Saved Activity reports' &>
+%   if ($mode eq 'screen') {
+      <& /Widgets/SavedSearch:show, %ARGS, Action => 'index.html', self => $saved_search, Title => 'Saved Activity reports' &>
+%   }
 <& /Search/Elements/ActivityReport, %ARGS &>
 % }
 
@@ -13,6 +15,7 @@ $ReportType  => undef
 $start => undef
 $end   => undef
 $query => undef
+$mode  => 'screen'
 </%args>
 <%init>
 unless ($start) {
