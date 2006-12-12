@@ -5,7 +5,6 @@
 % delete $printable_args{$_} for (qw/path title mode/);
 % $printable_args{'mode'} = 'print';
 % my $url = $path .'?'. join(';', map { $_."=".$printable_args{$_} } keys %printable_args);
-<% $RT::WebPath %>
 <a href="<%$RT::WebPath . $url |n%>"><&|/l&>Printable version</&></a>
 </div>
 % }
