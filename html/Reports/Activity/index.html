@@ -33,6 +33,7 @@ unless ($ARGS{End}) {
     $ARGS{End} = substr($now->ISO,0,10);
 }
 
+$ARGS{show_print_link} = 0 unless $ReportType;
 
 my $saved_search = $m->comp( '/Widgets/SavedSearch:new',
     SearchType   => 'ActivityReport',
