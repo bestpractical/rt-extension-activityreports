@@ -43,7 +43,7 @@ while (my $ticket = $summary_tickets->Next) {
 
 
 my $tickets = RT::Tickets->new($session{'CurrentUser'});
-$tickets->FromSQL($query);
+$tickets->FromSQL(join " AND ", map {"($_)"} grep {/\S/} ($query, "Updated >= '$start' AND Updated <= '$end'"));
 my @items;
 while (my $ticket = $tickets->Next) {
     my $txns = $ticket->Transactions;
