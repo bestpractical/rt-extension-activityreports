@@ -4,8 +4,8 @@ It is freely redistributable under the terms of version 2 of the GNU GPL.
 
 SUMMARY ---
 
-RT-Extension-ActivityReports provides a number of simple reporting
-tools to analyze the activity of your RT instance.
+RT-Extension-ActivityReports provides a number of reporting tools to
+analyze the activity of your RT instance.
 
 INSTALLATION ---
 
@@ -18,4 +18,9 @@ automatically detect it.)
 
 $ make
 $ make install
+
+USAGE ---
+
+Once installed, the activity reports can be accessed from the URL
+http://<path_to_your_RT>/Reports/Activity/index.html
 

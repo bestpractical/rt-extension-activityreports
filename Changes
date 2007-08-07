@@ -1,3 +1,9 @@
+0.10
+
+ * Added "Limit to user" picklist to the report limiting options
+ * Added some callbacks for plugin functionality
+ * Factored some common code into lib/RT/Extension/ActivityReports.pm
+
 0.8
 
  * Removed a stray print statement

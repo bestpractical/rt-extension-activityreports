@@ -35,9 +35,11 @@ unless ($ARGS{End}) {
 
 $ARGS{show_print_link} = 0 unless $ReportType;
 
+$m->comp( '/Elements/Callback', _CallbackName => 'FlipInvoiced', ARGSref => \%ARGS );
+
 my $saved_search = $m->comp( '/Widgets/SavedSearch:new',
     SearchType   => 'ActivityReport',
-    SearchFields => [qw(Query ReportType Start End)] );
+    SearchFields => [qw(Query ReportType Start End Actor)] );
 
 my @actions = $m->comp( '/Widgets/SavedSearch:process', args => \%ARGS, self => $saved_search );
 

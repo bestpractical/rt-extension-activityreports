@@ -96,6 +96,7 @@
 $query => ""
 $start => "2005/01/01"
 $end   => "2006/01/01"
+$actor => ""
 </%args>
 <%init>
 my $startDate = RT::Date->new($session{'CurrentUser'});
@@ -113,8 +114,11 @@ while (my $queue = $Queues->Next) {
     $queue{$queue->Id}{total_open} = $tix->Count();
 }
 
+my $actor_query = '';
+$actor_query = "(Owner = '$actor')" if $actor;
+
 my $tix = RT::Tickets->new($session{'CurrentUser'});
-$tix->FromSQL(join " AND ", map {"($_)"} grep {/\S/} ($query, "Updated >= '$start' AND Updated <= '$end'"));
+$tix->FromSQL(join " AND ", map {"($_)"} grep {/\S/} ($query, $actor_query, "Updated >= '$start' AND Updated <= '$end'"));
 while (my $ticket = $tix->Next) {
     my $created  = $ticket->CreatedObj;
     my $resolved = $ticket->ResolvedObj;

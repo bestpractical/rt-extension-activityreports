@@ -29,6 +29,7 @@
 $query => ''
 $start => "2005/01/01"
 $end   => "2006/01/01"
+$actor => ''
 </%args>
 <%init>
 my $tickets = RT::Tickets->new($session{'CurrentUser'});
@@ -39,13 +40,12 @@ my %status;
 my %total;
 my $total;
 while (my $ticket = $tickets->Next) {
-    my $txns = $ticket->Transactions;
-    $txns->Limit(FIELD => 'Created', OPERATOR => '>=', VALUE => $start);
-    $txns->Limit(FIELD => 'Created', OPERATOR => '<=', VALUE => $end);
-    $txns->Limit(FIELD => 'Type', VALUE => 'Status', ENTRYAGGREGATOR => 'OR');
-    $txns->Limit(FIELD => 'Type', VALUE => 'Create');
-
-    while (my $txn = $txns->Next) {
+    my $txns = RelevantTxns( $ticket, start => $start, end => $end, query => $query );
+    while (my $txn = $txns->Next) {	
+	# We have to filter for actor here, not in the query.  Alas.
+	if( $actor ) {
+	    next unless $txn->CreatorObj->Name ne $actor;
+	}
         $queues{$txn->TicketObj->QueueObj->Name}{$txn->NewValue || 'new'}++;   
         $status{$txn->NewValue || 'new'}++;
         $total{$txn->TicketObj->QueueObj->Name}++;

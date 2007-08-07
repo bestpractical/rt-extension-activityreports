@@ -37,6 +37,7 @@
 $query => ''
 $start => "2005/01/01"
 $end   => "2006/01/01"
+$actor => ''
 </%args>
 <%init>
 
@@ -54,12 +55,14 @@ $queries{'Last 60 days'} = "(Resolved >= '".$in_60_days->ISO."')";
 $queries{'Last 90 days'} = "(Resolved >= '".$in_90_days->ISO."')";
 $queries{'Ever'}         = "(Status = 'resolved' OR Status = 'rejected')";
 
+my $actor_query = '';
+$actor_query = "(Owner = '$actor')" if $actor;
 
 my %closed;
 my %queues;
 foreach my $period (keys %queries) {
     my $tix = RT::Tickets->new($session{'CurrentUser'});
-    $tix->FromSQL(join " AND ", map {"($_)"} grep {/\S/} ($query, $queries{$period}));
+    $tix->FromSQL(join " AND ", map {"($_)"} grep {/\S/} ($query, $actor_query, $queries{$period}));
 
     while (my $ticket = $tix->Next) {
         push @{ $closed{$period}{$ticket->QueueObj->Name}}, $ticket;
