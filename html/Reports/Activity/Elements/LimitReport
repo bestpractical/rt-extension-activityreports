@@ -5,7 +5,7 @@ Query:
 Report type: <select name="ReportType">
 <option value="ActivityDetail" <% $ReportType =~ /ActivityDetail/ ? 'selected' : '' %>>Activity detail</option>
 <option value="ActivitySummary" <% $ReportType =~ /ActivitySummary/ ? 'selected' : '' %>>Activity summary</option>
-<& /Elements/Callback, _CallbackName => 'AddReports', ARGSref => \%ARGS &>
+<& /Elements/Callback, _CallbackName => 'AddReports', %ARGS &>
 <option value="ResolutionComments" <% $ReportType =~ /ResolutionComments/ ? 'selected' : '' %>>Resolution comments</option>
 <option value="ResolutionStatistics" <% $ReportType =~ /ResolutionStatistics/ ? 'selected' : '' %>>Resolution statistics</option>
 <option value="WorkedStatistics" <% $ReportType =~ /WorkedStatistics/ ? 'selected' : '' %>>Time worked statistics</option>
@@ -13,15 +13,15 @@ Report type: <select name="ReportType">
 
 Start date: <input type="text" name="Start" value="<% $Start %>" /><br />
 End date:   <input type="text" name="End"   value="<% $End   %>" /><br />
-Limit to user: <& /Elements/SelectOwner, Name => "Actor", ValueAttribute => 'Name', Default => $Actor &>
-<& /Elements/Callback, _CallbackName => 'AddOptions', ARGSref => \%ARGS &>
+Limit to user: <& /Elements/SelectOwner, Name => "Actor", ValueAttribute => 'Name' &>
+<& /Elements/Callback, _CallbackName => 'AddOptions', %ARGS &>
 <& /Elements/Submit, Label => loc('Report') &>
 </form>
 <%args>
-$ReportType  => undef
+$ReportType  => ''
 $Start => undef
 $End   => undef
-$Query => undef
+$Query => ''
 $Actor => undef
 </%args>
 <%init>

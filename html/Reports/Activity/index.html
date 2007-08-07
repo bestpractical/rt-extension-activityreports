@@ -11,7 +11,7 @@
 </&>
 
 <%args>
-$ReportType => undef
+$ReportType => ''
 $mode  => 'screen'
 </%args>
 <%init>
@@ -35,7 +35,7 @@ unless ($ARGS{End}) {
 
 $ARGS{show_print_link} = 0 unless $ReportType;
 
-$m->comp( '/Elements/Callback', _CallbackName => 'FlipInvoiced', ARGSref => \%ARGS );
+$m->comp( '/Elements/Callback', _CallbackName => 'FlipInvoiced', %ARGS );
 
 my $saved_search = $m->comp( '/Widgets/SavedSearch:new',
     SearchType   => 'ActivityReport',

@@ -1,7 +1,7 @@
 <%args>
 $title => undef
 $path => undef
-$Query => undef
+$Query => ''
 </%args>
 <HTML>
 <HEAD>

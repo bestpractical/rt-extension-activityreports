@@ -1,8 +1,8 @@
 <%args>
-$ReportType  => undef
+$ReportType  => ''
 $Start => undef
 $End   => undef
-$Query => undef
+$Query => ''
 </%args>
 <%init>
 $m->redirect('/Reports/Activity/index.html?' . $m->comp('/Elements/QueryString', Query => $Query, Start => $Start, End => $End, ReportType => $ReportType));
