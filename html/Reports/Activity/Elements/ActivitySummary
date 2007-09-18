@@ -32,6 +32,8 @@ $end   => "2006/01/01"
 $actor => ''
 </%args>
 <%init>
+use RT::Extension::ActivityReports qw( RelevantTxns );
+
 my $tickets = RT::Tickets->new($session{'CurrentUser'});
 $tickets->FromSQL(join " AND ", map {"($_)"} grep {/\S/} ($query, "Updated >= '$start' AND Updated <= '$end'"));
 
