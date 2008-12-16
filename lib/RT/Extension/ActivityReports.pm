@@ -3,7 +3,7 @@ package RT::Extension::ActivityReports;
 use Exporter qw( import );
 @EXPORT_OK = qw( RelevantTxns );
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 =head2 RelevantTxns( $ticket, \%args )
 

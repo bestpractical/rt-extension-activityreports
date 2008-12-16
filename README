@@ -19,8 +19,13 @@ automatically detect it.)
 $ make
 $ make install
 
+If you are using RT 3.8 - add RT::Extension::ActivityReports to 
+@Plugins in your RT_SiteConfig.pm
+
 USAGE ---
 
 Once installed, the activity reports can be accessed from the URL
 http://<path_to_your_RT>/Reports/Activity/index.html
 
+and will also be available as a "generate reports" link at the bottom
+of search results
