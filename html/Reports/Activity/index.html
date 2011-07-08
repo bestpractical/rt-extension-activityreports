@@ -15,7 +15,7 @@ $ReportType => ''
 $mode  => 'screen'
 </%args>
 <%init>
-$ReportType = $ARGS{ReportType} ||= $ARGS{type};
+$ReportType = $ARGS{ReportType} ||= $ARGS{type} ||= '';
 $ARGS{Start}      ||= $ARGS{start};
 $ARGS{End}        ||= $ARGS{end};
 $ARGS{Query}      ||= $ARGS{query};
