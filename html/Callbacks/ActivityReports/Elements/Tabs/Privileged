@@ -65,4 +65,24 @@ if ( $request_path =~ qr{^/Search/(?:Article|Build|Bulk|Chart|Graph|Results)\.ht
                     sort_order => $sort_order );
 }
 
+
+if ( $request_path =~ qr{^/Reports/Activity} ) {
+    my $top = $m->caller_args(-1);
+    if ($top->{Query}) {
+        my $args = "?" . $query_string->(query => $top->{Query},
+                                         start => $top->{Start},
+                                         end   => $top->{End});
+        my $tabs = PageMenu;
+        $tabs->child( 'activity-detail' => title => loc('Activity detail'),
+                      path  => '/Reports/Activity/ActivityDetail.html'.$args );
+        $tabs->child( 'activity-summary' => title => loc('Activity summary'),
+                      path  => '/Reports/Activity/ActivitySummary.html'.$args );
+        $tabs->child( 'resolution-comments' => title => loc('Resolution comments'),
+                      path  => '/Reports/Activity/ResolutionComments.html'.$args );
+        $tabs->child( 'resolution-statistics' => title => loc('Resolution statistics'),
+                      path  => '/Reports/Activity/ResolutionStatistics.html'.$args );
+        $tabs->child( 'time-worked-statistic' => title => 'Time worked statistics',
+                      path  => '/Reports/Activity/WorkedStatistics.html'.$args );
+    }
+}
 </%INIT>
