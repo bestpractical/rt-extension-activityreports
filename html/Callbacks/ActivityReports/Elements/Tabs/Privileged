@@ -55,7 +55,7 @@ my $query_string = sub {
     return $u->query;
 };
 
-if ( $request_path =~ qr{^/Search/Results.html} ) {
+if ( $request_path =~ qr{^/Search/(?:Article|Build|Bulk|Chart|Graph|Results)\.html} ) {
     my $tabs = PageMenu;
     $tabs->child( 'activity' => title => loc('Generate reports'),
                     path => '/Reports/Activity/index.html?Query=' .$m->request_args->{'Query'} );
