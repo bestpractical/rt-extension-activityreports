@@ -57,8 +57,12 @@ my $query_string = sub {
 
 if ( $request_path =~ qr{^/Search/(?:Article|Build|Bulk|Chart|Graph|Results)\.html} ) {
     my $tabs = PageMenu;
+    my $last = ($tabs->children)[-1];
+    my $sort_order = $last->sort_order;
+    $last->sort_order( $sort_order + 1 );
     $tabs->child( 'activity' => title => loc('Generate reports'),
-                    path => '/Reports/Activity/index.html?Query=' .$m->request_args->{'Query'} );
+                    path => '/Reports/Activity/index.html?Query=' .$m->request_args->{'Query'},
+                    sort_order => $sort_order );
 }
 
 </%INIT>
