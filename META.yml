@@ -21,4 +21,4 @@ requires:
   Time::Duration: 0
 resources:
   license: http://dev.perl.org/licenses/
-version: 1.01
+version: 1.01_01

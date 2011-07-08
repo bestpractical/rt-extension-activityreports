@@ -1,6 +1,7 @@
 Changes
 html/Callbacks/ActivityReports/Elements/Header/Head
 html/Callbacks/ActivityReports/Elements/Tabs/Default
+html/Callbacks/ActivityReports/Elements/Tabs/Privileged
 html/Callbacks/ActivityReports/NoAuth/webrt.css/Default
 html/Callbacks/ActivityReports/Search/Results.html/SearchActions
 html/Reports/Activity/ActivityDetail.html
