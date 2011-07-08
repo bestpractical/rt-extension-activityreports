@@ -13,7 +13,7 @@ Report type: <select name="ReportType">
 
 Start date: <input type="text" name="Start" value="<% $Start %>" /><br />
 End date:   <input type="text" name="End"   value="<% $End   %>" /><br />
-Limit to user: <& /Elements/SelectOwner, Name => "Actor", ValueAttribute => 'Name' &>
+Limit to user: <& /Elements/SelectOwner, Name => "Actor", ValueAttribute => 'Name', Default => $actor_obj->Id||0 &>
 <& /Elements/Callback, _CallbackName => 'AddOptions', %ARGS &>
 <& /Elements/Submit, Label => loc('Report') &>
 </form>
@@ -25,4 +25,6 @@ $Query => ''
 $Actor => undef
 </%args>
 <%init>
+my $actor_obj = RT::User->new($session{CurrentUser});
+$actor_obj->LoadByCol( Name => $Actor );
 </%init>
