@@ -85,4 +85,8 @@ if ( $request_path =~ qr{^/Reports/Activity} ) {
                       path  => '/Reports/Activity/WorkedStatistics.html'.$args );
     }
 }
+
+my $menu = Menu;
+my $tools = $menu->child('tools');
+$tools->child('activity-reports' => title => loc('Activity Reports'), path  => 'Reports/Activity/index.html' );
 </%INIT>
