@@ -67,5 +67,5 @@ if ( $request_path =~ qr{^/Search/(?:Article|Build|Bulk|Chart|Graph|Results)\.ht
 
 my $menu = Menu;
 my $tools = $menu->child('tools');
-$tools->child('activity-reports' => title => loc('Activity Reports'), path  => 'Reports/Activity/index.html' );
+$tools->child('activity-reports' => title => loc('Activity Reports'), path  => '/Reports/Activity/index.html' );
 </%INIT>
