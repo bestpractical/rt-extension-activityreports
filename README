@@ -41,6 +41,12 @@ $ make install
 If you are using RT 3.8 or higher - add RT::Extension::ActivityReports
 to @Plugins in your RT_SiteConfig.pm
 
+
+BUGS ---
+
+Caused different "By users --> Time worked(h)" if "Limit to user" or not when "Report type" selected as "Time worked statistics (timeworked)". Had located the bug which is caused by actor_query = (Owner .....
+
+
 USAGE ---
 
 Once installed, the activity reports can be accessed from the URL
