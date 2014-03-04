@@ -30,7 +30,7 @@ unless ($ARGS{Start}) {
 unless ($ARGS{End}) {
     my $now = RT::Date->new($session{'CurrentUser'});
     $now->SetToNow();
-    $ARGS{End} = substr($now->ISO,0,10);
+    $ARGS{End} = $now->ISO;
 }
 
 $ARGS{show_print_link} = 0 unless $ReportType;
