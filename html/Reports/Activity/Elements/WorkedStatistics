@@ -81,7 +81,7 @@
 
 <br />
 <h3>Still open tickets created in date range</h3>
-<& /Elements/TicketList, 
+<& /Elements/CollectionList,
     Query   => qq{ ( Created >= '$start'  AND Created <= '$end' ) AND ( Status = 'new'  OR Status = 'open' ) },
     OrderBy => 'Created',
     Order   => 'ASC',
@@ -89,6 +89,7 @@
     Rows    => 0,
     BaseURL => $RT::WebPath."/Search/Results.html?",
     AllowSorting => 1,
+    Class => 'RT::Tickets',
 &>
 <br />
 
