@@ -85,7 +85,7 @@
     Query   => qq{ ( Created >= '$start'  AND Created <= '$end' ) AND ( Status = 'new'  OR Status = 'open' ) },
     OrderBy => 'Created',
     Order   => 'ASC',
-    Format  => q{'   <b><a href="/Ticket/Display.html?id=__id__">__id__</a></b>/TITLE:#','<a href="/Ticket/Display.html?id=__id__">__Subject__</a>/TITLE:Subject','__QueueName__','__Created__'},
+    Format  => q{'   <b><a href="__WebPath__/Ticket/Display.html?id=__id__">__id__</a></b>/TITLE:#','<a href="__WebPath__/Ticket/Display.html?id=__id__">__Subject__</a>/TITLE:Subject','__QueueName__','__Created__'},
     Rows    => 0,
     BaseURL => $RT::WebPath."/Search/Results.html?",
     AllowSorting => 1,
