@@ -1,30 +1,27 @@
+1.04 2014-07-09
+ - Fix missing WebPath
+ - Update for 4.2 compatibility
+
 1.03
-    * Fix broken link in Tools menu
+ - Fix broken link in Tools menu
 
 1.02
-    4.0 compatibility
+ - 4.0 compatibility
 
 1.0
-
- * .10 and .11 are < the .2 which is on CPAN
-
-0.11
-
- * fix docs for 3.8 installation
-
-0.10
-
- * Added "Limit to user" picklist to the report limiting options
- * Added some callbacks for plugin functionality
- * Factored some common code into lib/RT/Extension/ActivityReports.pm
+ - .10 and .11 are < the .2 which is on CPAN
 
 0.8
-
- * Removed a stray print statement
+ - Removed a stray print statement
 
 0.7
+ - improved CSS Styling for 3.6
 
- * improved CSS Styling for 3.6
+0.11
+ - fix docs for 3.8 installation
 
-
+0.10
+ - Added "Limit to user" picklist to the report limiting options
+ - Added some callbacks for plugin functionality
+ - Factored some common code into lib/RT/Extension/ActivityReports.pm
 
