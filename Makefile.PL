@@ -3,6 +3,9 @@ use inc::Module::Install;
 RTx('RT-Extension-ActivityReports');
 license('perl');
 requires('Time::Duration');
-author('Alex Vandiver <alexmv@bestpractical.com>');
+
+requires_rt '4.0.0';
+rt_too_new '4.4.0';
+
 sign;
 &WriteAll;

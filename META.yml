@@ -1,7 +1,7 @@
 ---
 abstract: 'RT-Extension-ActivityReports Extension'
 author:
-  - 'Alex Vandiver <alexmv@bestpractical.com>'
+  - 'Best Practical Solutions, LLC <modules@bestpractical.com>'
 build_requires:
   ExtUtils::MakeMaker: 6.59
 configure_requires:
@@ -25,3 +25,5 @@ resources:
   license: http://dev.perl.org/licenses/
 version: '1.03'
 x_module_install_rtx_version: 0.34_04
+x_requires_rt: 4.0.0
+x_rt_too_new: 4.4.0
