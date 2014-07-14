@@ -8,7 +8,7 @@ no warnings 'once';
 
 use Module::Install::Base;
 use base 'Module::Install::Base';
-our $VERSION = '0.34_04';
+our $VERSION = '0.34_05';
 
 use FindBin;
 use File::Glob     ();
@@ -35,7 +35,9 @@ sub RTx {
     $self->add_metadata("x_module_install_rtx_version", $VERSION );
 
     # Try to find RT.pm
-    my @prefixes = qw( /opt /usr/local /home /usr /sw );
+    my @prefixes = qw( /opt /usr/local /home /usr /sw /usr/share/request-tracker4);
+    $ENV{RTHOME} =~ s{/RT\.pm$}{} if defined $ENV{RTHOME};
+    $ENV{RTHOME} =~ s{/lib/?$}{}  if defined $ENV{RTHOME};
     my @try = $ENV{RTHOME} ? ($ENV{RTHOME}, "$ENV{RTHOME}/lib") : ();
     while (1) {
         my @look = @INC;
@@ -46,9 +48,10 @@ sub RTx {
 
         warn
             "Cannot find the location of RT.pm that defines \$RT::LocalPath in: @look\n";
-        $_ = $self->prompt("Path to directory containing your RT.pm:") or exit;
-        $_ =~ s{(/lib)?/RT\.pm$}{};
-        @try = ("$_/rt4/lib", "$_/lib/rt4", "$_/lib");
+        my $given = $self->prompt("Path to directory containing your RT.pm:") or exit;
+        $given =~ s{/RT\.pm$}{};
+        $given =~ s{/lib/?$}{};
+        @try = ($given, "$given/lib");
     }
 
     print "Using RT configuration from $INC{'RT.pm'}:\n";
@@ -250,4 +253,4 @@ sub _load_rt_handle {
 
 __END__
 
-#line 369
+#line 372
