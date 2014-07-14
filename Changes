@@ -1,3 +1,7 @@
+1.05 2014-07-14
+ - Updated Module::Install::RTx for better Debian compat and better
+   handling of user supplied paths
+
 1.04 2014-07-09
  - Fix missing WebPath
  - Update for 4.2 compatibility

@@ -3,7 +3,7 @@ package RT::Extension::ActivityReports;
 use Exporter qw( import );
 @EXPORT_OK = qw( RelevantTxns );
 
-our $VERSION = '1.04';
+our $VERSION = '1.05';
 
 =head1 NAME
 
