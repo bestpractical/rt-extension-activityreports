@@ -21,7 +21,8 @@ DESCRIPTION
           after they were created
 
         * status detail - similar to activity detail, but shows also open tickets 
-          without activity during the selected period (for completeness)
+          without activity during the selected period (for completeness) and extra
+          columns to have a more complete view of all ticket transactions
 
     All of these reports can be filtered by actor, arbitrary search query,
     and/or between two dates, so it's quite flexible.
