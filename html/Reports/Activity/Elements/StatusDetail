@@ -2,15 +2,16 @@
 
 <table style="width: 100%">
 <tr class="titlerow">
-<th>Queue</th><th>Activity</th><th>Date</th><th>Time</th><th>Ticket #</th><th>User</th><th>Short description</th>
+<th>Queue</th><th>Activity</th><th>Date</th><th>Time</th><th>Ticket #</th><th>Subject</th><th>User</th><th>Short description</th>
 </tr>
 % for my $item (@items) {
-<tr>
-<td><% $item->{queue} %></td>
-<td><% $item->{status} %></td>
-<td><% $item->{date} %></td>
-<td><% $item->{time} %></td>
-<td><% $item->{id} %></td>
+<tr valign=top>
+<td nowrap><% $item->{queue} %></td>
+<td nowrap><% $item->{status} %></td>
+<td nowrap><% $item->{date} %></td>
+<td nowrap><% $item->{time} %></td>
+<td nowrap><% $item->{id} %></td>
+<td><% $item->{subject} %></td>
 <td><% $item->{actor} %></td>
 <td><% $item->{notes} %></td>
 </tr>
@@ -46,6 +47,7 @@ while (my $ticket = $tickets->Next) {
 	# For the detail report
         push @items, { queue => $txn->TicketObj->QueueObj->Name,
                        id => $txn->TicketObj->id,
+                       subject => $txn->TicketObj->Subject,
                        date => (split ' ', $txn->CreatedObj->ISO)[0],
                        time => (split ' ', $txn->CreatedObj->ISO)[1],
                        status => $txn->NewValue || '-',
@@ -64,6 +66,7 @@ while (my $inactiveticket = $inactivetickets->Next) {
         $user->Load( $inactiveticket->LastUpdatedBy );
         push @items, { queue => $inactiveticket->QueueObj->Name,
                        id => $inactiveticket->id,
+                       subject => $inactiveticket->Subject,
                        date => (split ' ', $inactiveticket->LastUpdated)[0],
                        time => (split ' ', $inactiveticket->LastUpdated)[1],
                        status => $inactiveticket->Status,
