@@ -2,7 +2,7 @@
 
 <table style="width: 100%">
 <tr class="titlerow">
-<th>Queue</th><th>Activity</th><th>Date</th><th>Time</th><th>Ticket #</th><th>Subject</th><th>User</th><th>Short description</th>
+<th>Queue</th><th>Activity</th><th>Date</th><th>Time</th><th>Ticket #</th><th>Subject</th><th>User</th><th>Type</th><th>Short description</th>
 </tr>
 % for my $item (@items) {
 <tr valign=top>
@@ -11,8 +11,9 @@
 <td nowrap><% $item->{date} %></td>
 <td nowrap><% $item->{time} %></td>
 <td nowrap><% $item->{id} %></td>
-<td><% $item->{subject} %></td>
+<td width="25%"><% $item->{subject} %></td>
 <td><% $item->{actor} %></td>
+<td><% $item->{type} %></td>
 <td><% $item->{notes} %></td>
 </tr>
 % }
@@ -52,6 +53,7 @@ while (my $ticket = $tickets->Next) {
                        time => (split ' ', $txn->CreatedObj->ISO)[1],
                        status => $txn->NewValue || '-',
                        actor => $txn->CreatorObj->Name,
+                       type => $txn->Type,
                        notes => ($txn->Content ne 'This transaction appears to have no content' ? substr($txn->Content, 0, 100) :  $txn->BriefDescription)
                      };
     }
@@ -71,6 +73,7 @@ while (my $inactiveticket = $inactivetickets->Next) {
                        time => (split ' ', $inactiveticket->LastUpdated)[1],
                        status => $inactiveticket->Status,
                        actor => $user->Name,
+                       type => '-',
                        notes => '-- No updates since --'
         };
     }
