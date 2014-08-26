@@ -45,6 +45,8 @@ while (my $ticket = $tickets->Next) {
         # we don't have data on the status of a new ticket, default to 'new'
         $counts{$date}{$txn->NewValue || 'new'}++;
 
+        if (($date lt $start) or ($date gt $end)) { next; }
+
 	# For the detail report
         push @items, { queue => $txn->TicketObj->QueueObj->Name,
                        id => $txn->TicketObj->id,
@@ -74,7 +76,7 @@ while (my $inactiveticket = $inactivetickets->Next) {
                        status => $inactiveticket->Status,
                        actor => $user->Name,
                        type => '-',
-                       notes => '-- No updates since --'
+                       notes => '-- Opened, but no updates within range --'
         };
     }
 }
