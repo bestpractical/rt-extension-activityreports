@@ -1,3 +1,6 @@
+1.06 2014-09-30
+ - Prepend a missing WebPath
+
 1.05 2014-07-14
  - Updated Module::Install::RTx for better Debian compat and better
    handling of user supplied paths
