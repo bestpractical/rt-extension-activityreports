@@ -34,7 +34,7 @@ and/or between two dates, so it's quite flexible.
 
 =head1 RT VERSION
 
-Works with RT 4.0 and 4.2
+Works with RT 4
 
 =head1 INSTALLATION
 
