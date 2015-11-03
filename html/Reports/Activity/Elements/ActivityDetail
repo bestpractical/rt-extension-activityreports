@@ -59,7 +59,7 @@ while (my $ticket = $tickets->Next) {
         || $a->{'status'} cmp $b->{'status'}
         || $a->{'id'}     <=> $b->{'id'}
         || $a->{'actor'}  cmp $b->{'actor'}
-        || $a->{'notes'}  <=> $b->{'notes'}
+        || $a->{'notes'}  cmp $b->{'notes'}
 } @items;
 
 </%init>
