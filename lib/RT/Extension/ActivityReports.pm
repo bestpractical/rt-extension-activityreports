@@ -3,7 +3,7 @@ package RT::Extension::ActivityReports;
 use Exporter qw( import );
 @EXPORT_OK = qw( RelevantTxns );
 
-our $VERSION = '1.06';
+our $VERSION = '1.07';
 
 =head1 NAME
 
@@ -13,28 +13,41 @@ RT-Extension-ActivityReports - Additional reports to show Activity in RT
 
 The ActivityReports extension lets you see:
 
-    * activity detail - a table of ticket status per queue, and totals
+=over
 
-    * activity summary - a one-line summary of all updates made
+=item * Activity Detail
 
-    * resolution comments - summary of when tickets were resolved, duration
-      between creation and (latest) resolution
+A table of ticket status per queue, and totals.
 
-    * resolution statistics - for each queue, average duration between
-      creation and (latest) resolution over the last 30, 60, 90 days, and all time
+=item * Activity Summary
 
-    * time worked statistics - for each user, a table of every queue and how
-      long that user has worked on tickets that have been resolved in a
-      particular timeframe. for example, you can see how much time Joe has
-      spent on Basic Support (queue) tickets that have been resolved the day
-      after they were created
+A one-line summary of all updates made.
+
+=item * Resolution Comments
+
+Summary of when tickets were resolved, duration between creation
+and (latest) resolution.
+
+=item * Resolution Statistics
+
+For each queue, average duration between creation and (latest)
+resolution over the last 30, 60, 90 days, and all time.
+
+=item * Time Worked Statistics
+
+For each user, a table of every queue and how long that user has worked
+on tickets that have been resolved in a particular timeframe. For example,
+you can see how much time Joe has spent on Basic Support (queue) tickets
+that have been resolved the day after they were created.
+
+=back
 
 All of these reports can be filtered by actor, arbitrary search query,
 and/or between two dates, so it's quite flexible.
 
 =head1 RT VERSION
 
-Works with RT 4
+Works with RT 4.0, 4.2, 4.4
 
 =head1 INSTALLATION
 
