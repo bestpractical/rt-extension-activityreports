@@ -1,9 +1,8 @@
 Changes
-html/Callbacks/ActivityReports/Elements/Header/Head
 html/Callbacks/ActivityReports/Elements/Tabs/Default
 html/Callbacks/ActivityReports/Elements/Tabs/Privileged
-html/Callbacks/ActivityReports/NoAuth/webrt.css/Default
 html/Callbacks/ActivityReports/Search/Results.html/SearchActions
+html/NoAuth/css/activity-reports.css
 html/Reports/Activity/ActivityDetail.html
 html/Reports/Activity/ActivitySummary.html
 html/Reports/Activity/Elements/ActivityDetail
@@ -22,7 +21,6 @@ html/Reports/Activity/Elements/Wrapper
 html/Reports/Activity/index.html
 html/Reports/Activity/ResolutionComments.html
 html/Reports/Activity/ResolutionStatistics.html
-html/Reports/Activity/style.css
 html/Reports/Activity/WorkedStatistics.html
 html/Search/ActivityReport.html
 html/Search/Elements/ActivityReport
@@ -44,3 +42,4 @@ Makefile.PL
 MANIFEST			This list of files
 META.yml
 README
+static/css/activity-reports.css

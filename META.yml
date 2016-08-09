@@ -18,12 +18,13 @@ no_index:
   directory:
     - html
     - inc
+    - static
 requires:
   Time::Duration: 0
   perl: 5.8.3
 resources:
   license: http://dev.perl.org/licenses/
-version: '1.07'
+version: '1.08'
 x_module_install_rtx_version: '0.37'
 x_requires_rt: 4.0.0
 x_rt_too_new: 4.6.0

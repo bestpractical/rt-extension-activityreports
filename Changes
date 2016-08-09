@@ -1,3 +1,10 @@
+1.08 2016-08-09
+ - Update style sheet locations and method call to load. Previous
+   code manually loading css in Head could cause insecure content
+   warnings for https in Firefox. To remove the warnings, you need
+   to delete the old files under local/plugins/RT-Extension-ActivityReports
+   before installing the new version.
+
 1.07 2016-05-17
  - Release version for RT 4.4
 
