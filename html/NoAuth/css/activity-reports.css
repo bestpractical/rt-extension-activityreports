@@ -69,7 +69,3 @@ table.numberreport td {
     text-align: right;
 }
 
-<%init>
-RT::Interface::Web::StaticFileHeaders();
-$r->content_type('text/css');
-</%init>

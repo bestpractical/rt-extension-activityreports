@@ -3,7 +3,9 @@ package RT::Extension::ActivityReports;
 use Exporter qw( import );
 @EXPORT_OK = qw( RelevantTxns );
 
-our $VERSION = '1.07';
+our $VERSION = '1.08';
+
+RT->AddStyleSheets('activity-reports.css');
 
 =head1 NAME
 
