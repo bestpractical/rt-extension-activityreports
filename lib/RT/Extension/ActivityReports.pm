@@ -51,6 +51,8 @@ and/or between two dates, so it's quite flexible.
 
 Works with RT 4.0, 4.2, 4.4
 
+Works with RT 5.0, but styling has not yet been updated
+
 =head1 INSTALLATION
 
 =over
