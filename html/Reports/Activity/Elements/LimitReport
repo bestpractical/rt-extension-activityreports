@@ -9,6 +9,7 @@ Report type: <select name="ReportType">
 <option value="ResolutionComments" <% $ReportType =~ /ResolutionComments/ ? 'selected' : '' %>>Resolution comments</option>
 <option value="ResolutionStatistics" <% $ReportType =~ /ResolutionStatistics/ ? 'selected' : '' %>>Resolution statistics</option>
 <option value="WorkedStatistics" <% $ReportType =~ /WorkedStatistics/ ? 'selected' : '' %>>Time worked statistics</option>
+<option value="StatusDetail" <% $ReportType =~ /StatusDetail/ ? 'selected' : '' %>>Status detail</option>
 </select><br />
 
 Start date: <input type="text" name="Start" value="<% $Start %>" /><br />
