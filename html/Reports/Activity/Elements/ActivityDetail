@@ -2,14 +2,15 @@
 
 <table style="width: 100%">
 <tr class="titlerow">
-<th>Queue</th><th>Activity</th><th>Date</th><th>Time</th><th>Ticket #</th><th>User</th><th>Short description</th>
-</tr>
+<th>Queue</th><th>Activity</th><th>Date</th><th>Time</th><th>TimeTaken</th><th>Ticket #</th><th>User</th><th>Short description</th></tr>
 % for my $item (@items) {
 <tr>
 <td><% $item->{queue} %></td>
 <td><% $item->{status} %></td>
 <td><% $item->{date} %></td>
 <td><% $item->{time} %></td>
+<td><% $item->{worked} %></td>
+<td><a href="<% RT->Config->Get('WebURL')."/Ticket/Display.html?id=" %><% $item->{id} %>#txn-<% $item->{txnid} %>"><% $item->{id} %></td>
 <td><% $item->{id} %></td>
 <td><% $item->{actor} %></td>
 <td><% $item->{notes} %></td>
@@ -47,6 +48,8 @@ while (my $ticket = $tickets->Next) {
                        id => $txn->TicketObj->id,
                        date => (split ' ', $txn->CreatedObj->ISO)[0],
                        time => (split ' ', $txn->CreatedObj->ISO)[1],
+                       worked => $txn->TimeTaken,
+                      status => ( $txn->Type eq 'Set' ? $txn->Field :  $txn->NewValue || 'new' ),
                        status => $txn->NewValue || 'new',
                        actor => $txn->CreatorObj->Name,
                        notes => ($txn->Content ne 'This transaction appears to have no content' ? substr($txn->Content, 0, 60) :  $txn->BriefDescription)
