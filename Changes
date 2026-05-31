@@ -1,5 +1,16 @@
 Revision history for RT-Extension-ActivityReports
 
+2.01 2026-05-31
+ - Full UI redesign for RT 6 / Bootstrap 5
+ - Modern card layout with section headers and event counters
+ - Colour-coded status badges (new, open, resolved, rejected, stalled, comment, correspond)
+ - Clickable ticket links in ActivityDetail and ResolutionComments
+ - Responsive tables with striped rows and hover highlighting
+ - Redesigned MiniPlot bar chart with hover tooltips and modern colour palette
+ - WorkedStatistics split into three cards (queue stats, user performance, open tickets)
+ - ResolutionStatistics: grouped column headers, em-dash for empty cells
+ - CSS rewritten from scratch; old miniplot/titlerow/grandtotal classes replaced
+
 2.00 2025-06-17
  - Update for RT 6.0
 

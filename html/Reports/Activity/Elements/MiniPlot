@@ -1,57 +1,48 @@
-<table class="miniplot"><tr>
-% for my $major (@major) {
-<td><div class="graph">
-    <ul>
-% my $i = 0;
-% for my $minor (@minor) {
-%   my $percent = int( 100 * ($data->{$major}{$minor} || 0) / ($max || 1) );
-        <li class="c<% ($i % 6) + 1%>" style="width: <% $barwidth %>%; 
-                                              left: <% $baroffset + $each * $i %>%;
-                                              height: <% $percent %>%;"><div class="data"><% $minor %>: <% $percent %>%</div></li>
-% $i++;
-% }
-    </ul>
-</div></td>
-% }
-</tr><tr>
-% for my $major (@major) {
-<th class="legend"><% $major %></th>
-% }
-</tr>
-</table>
-
-<table class="miniplot"><tr>
-% my $i = 0;
-% for my $minor (@minor) {
-<th><span class="demoblock c<% ($i++ % 6) + 1 %>"></span> <% $minor %></th>
-% }
-</tr>
-</table>
-
 <%args>
 $data
 $major => undef
 $minor => undef
 </%args>
 <%init>
-
 my $max = 1;
-
 my %minor;
 for my $major (keys %{$data}) {
     for (keys %{$data->{$major}}) {
         $minor{$_}++;
-        $max = $data->{$major}{$_} if $data->{$major}{$_} > $max;
+        $max = $data->{$major}{$_} if ($data->{$major}{$_} || 0) > $max;
     }
 }
-
 my @major = $major ? @{$major} : sort keys %{$data};
 my @minor = $minor ? @{$minor} : sort keys %minor;
-
 return unless @minor and @major;
-
-my $each      = int( (100 / @minor) );
-my $barwidth  = int( (100 / @minor) * (3/4) );
-my $baroffset = int( (100 / @minor) * (1/8) );
-
 </%init>
+<div class="ar-miniplot-wrap">
+  <div class="ar-miniplot">
+% for my $maj (@major) {
+    <div class="ar-miniplot-col">
+      <div class="ar-miniplot-bars">
+%   my $i = 0;
+%   for my $min (@minor) {
+%     my $val     = $data->{$maj}{$min} || 0;
+%     my $pct     = int( 100 * $val / $max );
+%     my $tip     = "$min: $val";
+        <div class="ar-miniplot-bar ar-c<% ($i % 6) + 1 %>"
+             style="height:<% $pct || 1 %>%"
+             data-tip="<% $tip |h %>"></div>
+%     $i++;
+%   }
+      </div>
+      <div class="ar-miniplot-label"><% $maj %></div>
+    </div>
+% }
+  </div>
+  <div class="ar-miniplot-legend">
+% my $i = 0;
+% for my $min (@minor) {
+    <span class="ar-miniplot-legend-item">
+      <span class="ar-miniplot-swatch ar-c<% ($i++ % 6) + 1 %>"></span>
+      <% $min %>
+    </span>
+% }
+  </div>
+</div>

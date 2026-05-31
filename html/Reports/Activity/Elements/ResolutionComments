@@ -1,25 +1,3 @@
-
-<table style="width: 100%">
-<tr>
-<th>Queue</th><th>Ticket #</th><th>Created</th><th>Resolved</th><th>Time to resolve</th>
-</tr>
-<tr>
-<th colspan="5">Resolution comments</th>
-</tr>
-% for my $item (@items) {
-<tr class="titlerow">
-<td><% $item->{queue} %></td>
-<td><% $item->{id} %></td>
-<td><% $item->{created} %></td>
-<td><% $item->{resolved} %></td>
-<td><% $item->{duration} %></td>
-</tr>
-<tr>
-<td colspan="5"><% $item->{whiteboard} %></td>
-</tr>
-% }
-</table>
-
 <%args>
 $query => ''
 $start => "2005/01/01"
@@ -27,19 +5,17 @@ $end   => "2006/01/01"
 $actor => ''
 </%args>
 <%init>
-
 use Time::Duration;
-
 my $actor_query = '';
 $actor_query = "(Owner = '$actor')" if $actor;
 my $summary_tickets = RT::Tickets->new( $session{'CurrentUser'} );
 $summary_tickets->FromSQL(
-    join " AND ", map {"($_)"} grep {/\S/} ($query, $actor_query, "(Status = 'resolved') AND ( Updated >= '$start' AND Updated <= '$end')"));
-
+    join " AND ", map {"($_)"} grep {/\S/} ($query, $actor_query,
+    "(Status = 'resolved') AND ( Updated >= '$start' AND Updated <= '$end')"));
 my @items;
 while ( my $ticket = $summary_tickets->Next ) {
-    my $whiteboard = $ticket->CustomFieldValues('Whiteboard') ?
-      $ticket->FirstCustomFieldValue('Whiteboard') : undef;
+    my $whiteboard = $ticket->CustomFieldValues('Whiteboard')
+        ? $ticket->FirstCustomFieldValue('Whiteboard') : undef;
     push @items, {
         queue    => $ticket->QueueObj->Name,
         id       => $ticket->id,
@@ -53,11 +29,40 @@ while ( my $ticket = $summary_tickets->Next ) {
         whiteboard => $whiteboard,
     };
 }
-
 @items = sort { $a->{queue} cmp $b->{queue} || $a->{id} <=> $b->{id} } @items;
-
-
-
-
-
+my $webpath = RT->Config->Get('WebPath');
 </%init>
+<div class="ar-card">
+  <div class="ar-card-header">
+    Resolution Comments
+    <span class="badge bg-secondary ms-auto"><% scalar @items %> tickets</span>
+  </div>
+  <div class="ar-card-body">
+    <div class="ar-table-wrap">
+      <table class="ar-table">
+        <thead>
+          <tr>
+            <th>Queue</th>
+            <th>Ticket&nbsp;#</th>
+            <th>Created</th>
+            <th>Resolved</th>
+            <th>Time&nbsp;to&nbsp;Resolve</th>
+            <th>Whiteboard</th>
+          </tr>
+        </thead>
+        <tbody>
+% for my $item (@items) {
+          <tr>
+            <td><% $item->{queue} |h %></td>
+            <td><a class="ar-ticket-link" href="<% $webpath %>/Ticket/Display.html?id=<% $item->{id} %>"><% $item->{id} %></a></td>
+            <td style="white-space:nowrap;font-size:.85rem"><% $item->{created} |h %></td>
+            <td style="white-space:nowrap;font-size:.85rem"><% $item->{resolved} |h %></td>
+            <td style="white-space:nowrap"><span class="badge bg-light text-dark border"><% $item->{duration} |h %></span></td>
+            <td style="color:#495057;font-size:.85rem"><% $item->{whiteboard} |h %></td>
+          </tr>
+% }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

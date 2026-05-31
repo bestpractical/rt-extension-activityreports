@@ -1,71 +1,238 @@
-table.miniplot {
+/* ============================================================
+   RT-Extension-ActivityReports — Modern stylesheet
+   ============================================================ */
+
+/* ---- Report tables ---------------------------------------- */
+
+.ar-table-wrap {
+    overflow-x: auto;
+    margin-bottom: 1.5rem;
+}
+
+.ar-table {
     width: 100%;
     border-collapse: collapse;
+    font-size: 0.875rem;
 }
-table.miniplot td {
-    margin: 0;
-    padding: 0;
-    border-bottom: 1px solid black;
+
+.ar-table thead th {
+    background: #f1f3f5;
+    color: #495057;
+    font-weight: 600;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.55rem 0.8rem;
+    border-bottom: 2px solid #dee2e6;
+    white-space: nowrap;
 }
-table.miniplot .graph {
-    margin-left: auto;
-    margin-right: auto;
+
+.ar-table tbody tr:nth-child(even) { background: #f8f9fa; }
+.ar-table tbody tr:hover            { background: #e9f3ff; }
+
+.ar-table tbody td,
+.ar-table tbody th {
+    padding: 0.45rem 0.8rem;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: middle;
+}
+
+.ar-table tfoot th,
+.ar-table tfoot td {
+    border-top: 2px solid #dee2e6;
+    font-weight: 700;
+    padding: 0.55rem 0.8rem;
+    background: #f1f3f5;
+}
+
+.ar-table .ar-th-label {
+    text-align: left;
+    font-weight: 600;
+    color: #343a40;
+}
+
+.ar-table .ar-num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ---- Status badges ---------------------------------------- */
+
+.ar-badge {
+    display: inline-block;
+    padding: 0.2em 0.55em;
+    font-size: 0.72rem;
+    font-weight: 600;
+    border-radius: 0.25rem;
+    text-transform: capitalize;
+    white-space: nowrap;
+}
+
+.ar-badge-new        { background: #cfe2ff; color: #084298; }
+.ar-badge-open       { background: #d1e7dd; color: #0a3622; }
+.ar-badge-resolved   { background: #e2e3e5; color: #383d41; }
+.ar-badge-rejected   { background: #f8d7da; color: #58151c; }
+.ar-badge-stalled    { background: #fff3cd; color: #664d03; }
+.ar-badge-deleted    { background: #f8d7da; color: #58151c; }
+.ar-badge-comment    { background: #e0cffc; color: #3d0a91; }
+.ar-badge-correspond { background: #d0e4f7; color: #0c3c60; }
+.ar-badge-default    { background: #e2e3e5; color: #383d41; }
+
+/* ---- Ticket link ------------------------------------------ */
+
+.ar-ticket-link {
+    font-weight: 600;
+    color: #0d6efd;
+    text-decoration: none;
+}
+.ar-ticket-link:hover { text-decoration: underline; }
+
+/* ---- Section card ----------------------------------------- */
+
+.ar-card {
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+}
+
+.ar-card-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    padding: 0.6rem 1rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #343a40;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.ar-card-body { padding: 0; }
+
+/* ---- MiniPlot (bar chart) --------------------------------- */
+
+.ar-miniplot-wrap {
+    padding: 0.75rem 1rem 0.5rem;
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.ar-miniplot {
+    display: flex;
+    gap: 2px;
+    align-items: flex-end;
+    height: 80px;
+}
+
+.ar-miniplot-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+}
+
+.ar-miniplot-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 64px;
+    width: 100%;
+    justify-content: center;
+}
+
+.ar-miniplot-bar {
+    flex: 1;
+    min-width: 4px;
+    max-width: 18px;
+    border-radius: 2px 2px 0 0;
+    cursor: default;
     position: relative;
-    width: 60px;
+    transition: opacity 0.15s;
 }
-table.miniplot .graph ul { 
-    height: 100px; 
-    margin: 0;
-    padding: 0;
+
+.ar-miniplot-bar:hover { opacity: 0.7; }
+
+.ar-miniplot-bar::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.82);
+    color: #fff;
+    font-size: 10px;
+    padding: 3px 6px;
+    border-radius: 3px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+    z-index: 100;
 }
-table.miniplot .graph ul li {  
-    list-style: none;
-    position: absolute; 
-    bottom: 0px; 
-    padding: 0 !important; 
-    margin: 0 !important; 
-    border-bottom: none;
+
+.ar-miniplot-bar:hover::after { opacity: 1; }
+
+.ar-miniplot-label {
+    font-size: 0.62rem;
+    color: #6c757d;
+    text-align: center;
+    margin-top: 3px;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.2;
 }
-table.miniplot .graph ul li .data {
+
+.ar-miniplot-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 1rem;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: #495057;
+}
+
+.ar-miniplot-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.ar-miniplot-swatch {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+/* ---- Bar / swatch colors ---------------------------------- */
+
+.ar-c1 { background: #4361ee; }
+.ar-c2 { background: #f72585; }
+.ar-c3 { background: #06d6a0; }
+.ar-c4 { background: #7209b7; }
+.ar-c5 { background: #f77f00; }
+.ar-c6 { background: #3a86ff; }
+
+/* ---- colspan group header --------------------------------- */
+
+.ar-table .ar-group-header {
+    text-align: center;
+    background: #e9ecef;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    padding: 0.35rem 0.5rem;
+    border-bottom: 1px solid #dee2e6;
+    color: #495057;
+}
+
+/* ---- Saved-search widget tweak ---------------------------- */
+
+div.activity-reports-saved-search div.container.text-center a#saved-search-options-button {
     display: none;
 }
-
-.miniplot .demoblock { margin: 0 10px; padding: 0 30px; }
-
-.miniplot .c1 { border: 2px solid #990000; background: #ff0000; }
-.miniplot .c2 { border: 2px solid #996600; background: #ff9900; }
-.miniplot .c3 { border: 2px solid #009900; background: #00ff00; }
-.miniplot .c4 { border: 2px solid #009999; background: #00ffff; }
-.miniplot .c5 { border: 2px solid #000099; background: #0000ff; }
-.miniplot .c6 { border: 2px solid #990099; background: #ff00ff; }
-graph .c5 { border: 2px solid #000099; background: #0000ff; }
-.graph .c6 { border: 2px solid #990099; background: #ff00ff; }
-
-tr.titlerow  th { 
-    border-bottom: solid black 1px;
-    margin: 0;
-    font-size:80%;
-    text-wrap:  none;
-}
-
-tr.grandtotal td, tr.grandtotal th{
-    border-top: 1px solid black;
-}
-
-th.label { 
-    align: left;
-}
-
-table.miniplot th.legend {
-    font-style: normal;
-    font-size: 80%;
-}
-
-table.numberreport {
-    width: 100%;
-}
-table.numberreport td {
-    padding: 0 1em;
-    text-align: right;
-}
-

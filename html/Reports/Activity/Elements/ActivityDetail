@@ -1,22 +1,3 @@
-<& MiniPlot, data => \%counts &>
-
-<table style="width: 100%">
-<tr class="titlerow">
-<th>Queue</th><th>Activity</th><th>Date</th><th>Time</th><th>Ticket #</th><th>User</th><th>Short description</th>
-</tr>
-% for my $item (@items) {
-<tr>
-<td><% $item->{queue} %></td>
-<td><% $item->{status} %></td>
-<td><% $item->{date} %></td>
-<td><% $item->{time} %></td>
-<td><% $item->{id} %></td>
-<td><% $item->{actor} %></td>
-<td><% $item->{notes} %></td>
-</tr>
-% }
-</table>
-
 <%args>
 $query => ''
 $start => "2005/01/01"
@@ -32,34 +13,82 @@ $tickets->FromSQL(join " AND ", map {"($_)"} grep {/\S/} ($query, "Updated >= '$
 while (my $ticket = $tickets->Next) {
     my $txns = RelevantTxns( $ticket, start => $start, end => $end, query => $query );
     while (my $txn = $txns->Next) {
-	# We have to filter for actor here, not in the query.  Alas.
-	if( $actor ) {
-	    next unless $txn->CreatorObj->Name eq $actor;
-	}
-
-	# For the summary report
+        if ( $actor ) {
+            next unless $txn->CreatorObj->Name eq $actor;
+        }
         my $date = substr($txn->Created, 0, 10);
-        # we don't have data on the status of a new ticket, default to 'new'
         $counts{$date}{$txn->NewValue || 'new'}++;
-
-	# For the detail report
-        push @items, { queue => $txn->TicketObj->QueueObj->Name,
-                       id => $txn->TicketObj->id,
-                       date => (split ' ', $txn->CreatedObj->ISO)[0],
-                       time => (split ' ', $txn->CreatedObj->ISO)[1],
-                       status => $txn->NewValue || 'new',
-                       actor => $txn->CreatorObj->Name,
-                       notes => ($txn->Content ne 'This transaction appears to have no content' ? substr($txn->Content, 0, 60) :  $txn->BriefDescription)
-                     };
+        push @items, {
+            queue  => $txn->TicketObj->QueueObj->Name,
+            id     => $txn->TicketObj->id,
+            date   => (split ' ', $txn->CreatedObj->ISO)[0],
+            time   => (split ' ', $txn->CreatedObj->ISO)[1],
+            status => $txn->NewValue || 'new',
+            actor  => $txn->CreatorObj->Name,
+            notes  => ( $txn->Content ne 'This transaction appears to have no content'
+                        ? substr($txn->Content, 0, 80)
+                        : $txn->BriefDescription ),
+        };
     }
 }
-
 @items = sort {
-           $a->{queue}    cmp $b->{'queue'}
-        || $a->{'status'} cmp $b->{'status'}
-        || $a->{'id'}     <=> $b->{'id'}
-        || $a->{'actor'}  cmp $b->{'actor'}
-        || $a->{'notes'}  cmp $b->{'notes'}
+       $a->{queue}  cmp $b->{queue}
+    || $a->{status} cmp $b->{status}
+    || $a->{id}     <=> $b->{id}
+    || $a->{actor}  cmp $b->{actor}
 } @items;
 
+my %badge_class = (
+    new        => 'ar-badge-new',
+    open       => 'ar-badge-open',
+    resolved   => 'ar-badge-resolved',
+    rejected   => 'ar-badge-rejected',
+    stalled    => 'ar-badge-stalled',
+    deleted    => 'ar-badge-deleted',
+    comment    => 'ar-badge-comment',
+    correspond => 'ar-badge-correspond',
+);
+my $badge = sub {
+    my $s = shift;
+    my $cls = $badge_class{lc $s} // 'ar-badge-default';
+    return qq{<span class="ar-badge $cls">$s</span>};
+};
+my $webpath = RT->Config->Get('WebPath');
 </%init>
+<div class="ar-card">
+  <div class="ar-card-header">
+    Activity Detail
+    <span class="badge bg-secondary ms-auto"><% scalar @items %> events</span>
+  </div>
+  <div class="ar-card-body">
+    <& MiniPlot, data => \%counts &>
+    <div class="ar-table-wrap">
+      <table class="ar-table">
+        <thead>
+          <tr>
+            <th>Queue</th>
+            <th>Activity</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Ticket&nbsp;#</th>
+            <th>User</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+% for my $item (@items) {
+          <tr>
+            <td><% $item->{queue} |h %></td>
+            <td><%$badge->($item->{status})|n%></td>
+            <td><% $item->{date} |h %></td>
+            <td style="white-space:nowrap;color:#6c757d;font-size:.8rem"><% $item->{time} |h %></td>
+            <td><a class="ar-ticket-link" href="<% $webpath %>/Ticket/Display.html?id=<% $item->{id} %>"><% $item->{id} %></a></td>
+            <td style="white-space:nowrap"><% $item->{actor} |h %></td>
+            <td style="color:#495057"><% $item->{notes} |h %></td>
+          </tr>
+% }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

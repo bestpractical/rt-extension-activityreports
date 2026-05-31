@@ -1,30 +1,3 @@
-
-<& MiniPlot, data => \%queues &>
-
-<table style="width: 100%">
-<tr class="titlerow">
-<th>Queue</th>
-% for my $status (sort keys %status) {
-<th><% $status %></th>
-% }
-<th>Total</th>
-</tr>
-% for my $queue (sort keys %queues) {
-<th class="label"><% $queue %></th>
-% for my $status (sort keys %status) {
-<td><% $queues{$queue}{$status} || 0 %>
-% }
-<td><% $total{$queue} %></td>
-</tr>
-% }
-<tr class="grandtotal">
-<th class="label" >Grand Total</th>
-% for my $status (sort keys %status) {
-<td><% $status{$status} %></td>
-% }
-<td><% $total %></td>
-</table>
-
 <%args>
 $query => ''
 $start => "2005/01/01"
@@ -33,27 +6,58 @@ $actor => ''
 </%args>
 <%init>
 use RT::Extension::ActivityReports qw( RelevantTxns );
-
 my $tickets = RT::Tickets->new($session{'CurrentUser'});
 $tickets->FromSQL(join " AND ", map {"($_)"} grep {/\S/} ($query, "Updated >= '$start' AND Updated <= '$end'"));
-
-my %queues;
-my %status;
-my %total;
-my $total;
+my %queues; my %status; my %total; my $total;
 while (my $ticket = $tickets->Next) {
     my $txns = RelevantTxns( $ticket, start => $start, end => $end, query => $query );
-    while (my $txn = $txns->Next) {	
-	# We have to filter for actor here, not in the query.  Alas.
-	if( $actor ) {
-	    next unless $txn->CreatorObj->Name ne $actor;
-	}
-        $queues{$txn->TicketObj->QueueObj->Name}{$txn->NewValue || 'new'}++;   
+    while (my $txn = $txns->Next) {
+        if ( $actor ) {
+            next unless $txn->CreatorObj->Name ne $actor;
+        }
+        $queues{$txn->TicketObj->QueueObj->Name}{$txn->NewValue || 'new'}++;
         $status{$txn->NewValue || 'new'}++;
         $total{$txn->TicketObj->QueueObj->Name}++;
         $total++;
     }
 }
-
-
 </%init>
+<div class="ar-card">
+  <div class="ar-card-header">Activity Summary</div>
+  <div class="ar-card-body">
+    <& MiniPlot, data => \%queues &>
+    <div class="ar-table-wrap">
+      <table class="ar-table">
+        <thead>
+          <tr>
+            <th>Queue</th>
+% for my $s (sort keys %status) {
+            <th class="ar-num"><% $s |h %></th>
+% }
+            <th class="ar-num">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+% for my $queue (sort keys %queues) {
+          <tr>
+            <th class="ar-th-label"><% $queue |h %></th>
+%   for my $s (sort keys %status) {
+            <td class="ar-num"><% $queues{$queue}{$s} || 0 %></td>
+%   }
+            <td class="ar-num"><strong><% $total{$queue} %></strong></td>
+          </tr>
+% }
+        </tbody>
+        <tfoot>
+          <tr>
+            <th class="ar-th-label">Grand Total</th>
+% for my $s (sort keys %status) {
+            <td class="ar-num"><% $status{$s} %></td>
+% }
+            <td class="ar-num"><strong><% $total %></strong></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</div>
